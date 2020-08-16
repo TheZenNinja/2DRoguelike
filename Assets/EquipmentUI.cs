@@ -49,12 +49,12 @@ public class EquipmentUIData
     public float chargePercent;
     public bool overDrawn;
 
-    public static EquipmentUIData NewGunData(int currentAmmo, int reserveAmmo)
+    public static EquipmentUIData NewGunData(Vector2Int currentAmmo, Vector2Int reserveAmmo)
     {
         EquipmentUIData data = new EquipmentUIData();
         data.type = EquipmentType.gun;
-        data.currentAmmo = currentAmmo;
-        data.reserveAmmo = reserveAmmo;
+        data.currentAmmo = currentAmmo.x;
+        data.reserveAmmo = currentAmmo.y;
         return data;
     }
     public static EquipmentUIData NewBowData(float chargePercent, bool overDrawn, int reserveAmmo = 0)

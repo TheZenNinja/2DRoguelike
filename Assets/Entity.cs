@@ -59,6 +59,9 @@ public class Entity : MonoBehaviour
     }
     public void Damage(int dmg = 1)
     {
+        if (currentHealth <= 0)
+            return;
+
         currentHealth -= dmg;
 
         onDamage?.Invoke();

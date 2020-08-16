@@ -57,9 +57,11 @@ public class ProjectileScript : MonoBehaviour
                 case ProjectileType.sticking:
                     if (!collision.GetComponent<ProjectileScript>())
                     {
-                        GetComponent<RecallDamageComponent>().SetEntity(e);
+                        if (e)
+                            GetComponent<RecallDamageComponent>().SetEntity(e);
+
                         rb.velocity = Vector2.zero;
-                        transform.parent = e.transform;
+                        transform.parent = collision.transform;
                         this.enabled = false;
                     }
                     break;

@@ -20,6 +20,7 @@ public class WeaponScript : EquipmentBase
     public Vector2Int clipAmmo = Vector2Int.one * 10;
     public Vector2Int reserveAmmo = Vector2Int.one * 200;
 
+    [Range(0,360)]
     public float accuracyAngle;
     public Vector3 barrelPos;
     public SpriteRenderer shootFX;
@@ -89,8 +90,10 @@ public class WeaponScript : EquipmentBase
             angle += UnityEngine.Random.Range(-accuracyAngle / 2, accuracyAngle / 2);
 
         if (shootFX)
+        {
+            StopCoroutine(FlashEffect());
             StartCoroutine(FlashEffect());
-
+        }
         proj.Setup(damage, speed, angle, projectileType);
 
         if (projectileType == ProjectileType.sticking)
@@ -127,6 +130,7 @@ public class WeaponScript : EquipmentBase
         reloading = false;
 
         onReloadAction?.Invoke();
+        onReloadAction = null;
     }
     public Vector3 GetBarrelPos()
     {
@@ -135,8 +139,7 @@ public class WeaponScript : EquipmentBase
 
     public override EquipmentUIData GetUIData()
     {
-        throw new NotImplementedException();
-        //return EquipmentUIData.NewGunData(clipAmmo, reserveAmmo);
+        return EquipmentUIData.NewGunData(clipAmmo, reserveAmmo);
     }
     private void OnDrawGizmosSelected()
     {

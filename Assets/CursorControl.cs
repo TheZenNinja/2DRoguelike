@@ -5,20 +5,20 @@ using UnityEngine;
 public class CursorControl : MonoBehaviour
 {
     public static CursorControl instance;
-    public Transform playerHands;
+    public Transform playerHandDir;
 
     public Vector2 GetDirFromHand()
     {
-        return GetMouseDir(playerHands.position);
+        return GetMouseDir(playerHandDir.position);
     }
     public float GetAngleFromHand()
     {
-        return GetMouseAngle(playerHands.position);
+        return GetMouseAngle(playerHandDir.position);
     }
 
     public void Update()
     {
-        playerHands.eulerAngles = new Vector3(0,0, GetAngleFromHand());
+        playerHandDir.eulerAngles = new Vector3(0,0, GetAngleFromHand());
     }
 
     public static Vector2 GetMouseDir(Vector3 pos)

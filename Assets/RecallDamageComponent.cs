@@ -5,13 +5,16 @@ using UnityEngine;
 public class RecallDamageComponent : MonoBehaviour
 {
     [SerializeField] int dmg;
-    Entity e;
+    [SerializeField] Entity e;
 
     public void SetupData(int dmg) => this.dmg = dmg;
     public void SetEntity(Entity entity) => e = entity;
     public void RecallEvent()
     {
-        if (gameObject && e)
+        if (!this)
+            return;
+
+        if (gameObject)
         {
             e?.Damage(dmg);
             Destroy(gameObject);
