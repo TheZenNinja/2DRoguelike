@@ -57,6 +57,9 @@ public class Entity : MonoBehaviour
 
         rb.velocity = hitForce;
     }
+
+    public bool InRangeMin(Vector3 position, float range) => Vector3.SqrMagnitude(transform.position - position) <= range;
+    public bool InRangeMax(Vector3 position, float range) => Vector3.SqrMagnitude(transform.position - position) >= range;
     public void Damage(int dmg = 1)
     {
         if (currentHealth <= 0)
