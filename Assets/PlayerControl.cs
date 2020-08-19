@@ -9,7 +9,6 @@ public class PlayerControl : MonoBehaviour
     public PlayerControl() => instance = this;
 
     public Vector2 inputDir;
-    public bool flipped;
     public SpriteRenderer sprite;
     public float speed = 5;
     public float sprintSpeed = 10;
@@ -41,7 +40,6 @@ public class PlayerControl : MonoBehaviour
     void Update()
     {
         Move();
-        CheckForFlipped();
         dashInput.Update(Time.deltaTime);
         dashCooldown.Update(Time.deltaTime);
     }
@@ -55,14 +53,6 @@ public class PlayerControl : MonoBehaviour
         velocity = Vector2.Lerp(velocity, goalVel, Time.deltaTime * acceleration);
 
         rb.velocity = velocity + dashVelocity;
-    }
-    public void CheckForFlipped()
-    {
-        if (Input.mousePosition.x - Screen.width / 2 > 0)
-            flipped = false; 
-        else if (Input.mousePosition.x - Screen.width / 2 < 0)
-            flipped = true;
-        sprite.flipX = flipped;
     }
     private void CheckDash()
     {

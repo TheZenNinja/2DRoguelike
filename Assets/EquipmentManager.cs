@@ -4,24 +4,41 @@ using UnityEngine;
 
 public class EquipmentManager : MonoBehaviour
 {
-    //public WeaponItem[] weapons = new WeaponItem[3];
+    public int weaponIndex;
+    public EquipmentBase[] weapons = new EquipmentBase[3];
+    private EquipmentBase currentWeapon => weapons[weaponIndex];
+
     public Transform playerHands;
     public PlayerControl playerControl;
-    public EquipmentBase currentItem;
     public EquipmentUI ui;
     public Animator anim;
-    private bool flipped { get { return playerControl.flipped; } }
-
     void Start()
     {
+        SwapWeapon(0);
     }
 
     void Update()
     {
-        currentItem.HandleInput();
-        ui.UpdateUI(currentItem.GetUIData());
+        if (Input.GetKeyDown(KeyCode.Alpha1))
+            SwapWeapon(0);
+        if (Input.GetKeyDown(KeyCode.Alpha2))
+            SwapWeapon(1);
+        if (Input.GetKeyDown(KeyCode.Alpha3))
+            SwapWeapon(2);
 
-        //playerHands.right = flipped ?  -playerControl.mouseDir : playerControl.mouseDir;
-        playerHands.localScale = flipped ? new Vector3(1,-1,1) : Vector3.one;
+
+        currentWeapon.HandleInput();
+        ui.UpdateUI(currentWeapon.GetUIData());
+    }
+    public void SwapWeapon(int index)
+    {
+        weaponIndex = index;
+        for (int i = 0; i < weapons.Length; i++)
+        {
+            if (i == index)
+                weapons[i].Equip();
+            else
+                weapons[i].Unequip();
+        }
     }
 }

@@ -146,4 +146,14 @@ public class WeaponScript : EquipmentBase
         Gizmos.color = Color.red;
         Gizmos.DrawLine(GetBarrelPos(), GetBarrelPos() + transform.right);
     }
+
+    public override void Equip()
+    {
+        reloading = false;
+    }
+
+    public override void Unequip()
+    {
+        reloading = false;
+    }
 }
