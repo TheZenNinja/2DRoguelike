@@ -6,7 +6,7 @@ using UnityEngine;
 public abstract class EquipmentBase : MonoBehaviour
 {
     public abstract void HandleInput();
-    public abstract EquipmentUIData GetUIData();
+    public abstract object GetUIData();
 
     public abstract void Equip();
     public abstract void Unequip();

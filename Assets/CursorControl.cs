@@ -6,7 +6,7 @@ public class CursorControl : MonoBehaviour
 {
     public static CursorControl instance;
     public Transform playerHandDir;
-
+    public CursorControl() => instance = this;
     public Vector2 GetDirFromHand()
     {
         return GetMouseDir(playerHandDir.position);

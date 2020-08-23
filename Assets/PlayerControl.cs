@@ -16,12 +16,10 @@ public class PlayerControl : MonoBehaviour
     public bool sprinting; 
 
     [Header("Dashing")]
-    public float dashSpeed = 20;
+    public float dashDistance = 5;
     public bool canDash;
-    public TimedInput dashInput;
     public float dashDuration = 0.5f;
     public Timer dashCooldown;
-
 
     public static event System.Action onDash;
 
@@ -32,7 +30,6 @@ public class PlayerControl : MonoBehaviour
     void Start()
     {
         canDash = true;
-        dashInput.SetupTapOnly(CheckDash);
         dashCooldown.onTimeEnd = () => canDash = true;
         rb = GetComponent<Rigidbody2D>();
     }
@@ -40,12 +37,14 @@ public class PlayerControl : MonoBehaviour
     void Update()
     {
         Move();
-        dashInput.Update(Time.deltaTime);
         dashCooldown.Update(Time.deltaTime);
     }
     public void Move()
     {
         inputDir = new Vector2(Input.GetAxisRaw("Horizontal"), Input.GetAxisRaw("Vertical"));
+
+        if (Input.GetKeyDown(KeyCode.Space) && dashCooldown.finished)
+            StartCoroutine(Dash());
 
         sprinting = Input.GetKey(KeyCode.LeftShift);
 
@@ -54,15 +53,10 @@ public class PlayerControl : MonoBehaviour
 
         rb.velocity = velocity + dashVelocity;
     }
-    private void CheckDash()
-    {
-        if (dashCooldown.finished)
-            StartCoroutine(Dash());
-    }
     private IEnumerator Dash()
     {
         canDash = false;
-        dashVelocity = inputDir * dashSpeed;
+        dashVelocity = inputDir * dashDistance/dashDuration;
         sprite.color =  new Color(0.75f, 0.75f, 0.75f, 0.75f);
         onDash?.Invoke();
         yield return new WaitForSeconds(dashDuration);

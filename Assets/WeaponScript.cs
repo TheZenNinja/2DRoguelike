@@ -38,12 +38,11 @@ public class WeaponScript : EquipmentBase
 
     public Action onReloadAction;
 
-    public Transform hands;
-
     void Start()
     {
         SetRPM();
-        shootFX.enabled = false;
+        if (shootFX)
+            shootFX.enabled = false;
         reloading = false;
         clipAmmo.x = clipAmmo.y;
     }
@@ -85,7 +84,7 @@ public class WeaponScript : EquipmentBase
 
         ProjectileScript proj = Instantiate(projectilePref, GetBarrelPos(), Quaternion.identity).GetComponent<ProjectileScript>();
 
-        float angle = CursorControl.GetMouseAngle(hands.position);
+        float angle = CursorControl.instance.GetAngleFromHand();
         if (clipAmmo.x < clipAmmo.y)
             angle += UnityEngine.Random.Range(-accuracyAngle / 2, accuracyAngle / 2);
 
@@ -137,9 +136,9 @@ public class WeaponScript : EquipmentBase
         return transform.position + transform.TransformVector(barrelPos);
     }
 
-    public override EquipmentUIData GetUIData()
+    public override object GetUIData()
     {
-        return EquipmentUIData.NewGunData(clipAmmo, reserveAmmo);
+        return null;
     }
     private void OnDrawGizmosSelected()
     {
