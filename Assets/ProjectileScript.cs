@@ -67,7 +67,7 @@ public class ProjectileScript : MonoBehaviour
                     break;
             }
         }
-        if (collision.gameObject.layer == LayerMask.NameToLayer("Ground"))
+        if (collision.gameObject.layer == LayerMask.NameToLayer("Walls"))
         {
             if (type != ProjectileType.sticking)
                 Destroy(gameObject);

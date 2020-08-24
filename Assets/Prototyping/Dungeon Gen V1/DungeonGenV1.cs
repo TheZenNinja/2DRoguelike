@@ -8,22 +8,51 @@ public class DungeonGenV1 : MonoBehaviour
 {
     public GameObject TilePref;
     public float size = 1;
+    public float scale = 1;
+    public int cycles = 20;
+    public List<Vector2> searchPoints = new List<Vector2>();
+    public List<Vector2> tilePoints = new List<Vector2>();
+    private List<DungeonTile> tiles = new List<DungeonTile>();
 
-    public List<Vector3> searchPoints = new List<Vector3>();
-    public List<Vector3> tilePoints = new List<Vector3>();
+    [Space]
+    public Vector3 spawnPos;
+
+    [Range(0,1)]
+    public float enemySpawnChance = 0.5f;
+    [Range(0,1)]
+    public float lootSpawnChance = 0.5f;
+
+    public List<GameObject> spawnedEnemy;
+    public List<GameObject> spawnedLoot;
+
+    public GameObject enemy;
+    public GameObject loot;
+    public GameObject player;
 
     void Start()
     {
+        GenerateAllCycles();
+    }
+    public void GenerateAllCycles()
+    {
         ClearTiles();
+        for (int i = 0; i < cycles; i++)
+            GenerateCycle();
+
+        SpawnTiles();
+
+        transform.localScale = Vector3.one * scale;
+        player.transform.position = spawnPos * scale;
+        
     }
     public void GenerateCycle()
     {
-        Vector3 randomPos = searchPoints[Random.Range(0, searchPoints.Count)];
-        Debug.Log(randomPos);
-        Vector3[] newPoints = { randomPos + Vector3.up * size,
-                                randomPos + Vector3.right * size,
-                                randomPos - Vector3.up * size,
-                                randomPos - Vector3.right * size};
+        Vector2 randomPos = searchPoints[Random.Range(0, searchPoints.Count)];
+
+        Vector2[] newPoints = { randomPos + Vector2.up,
+                                randomPos + Vector2.right,
+                                randomPos - Vector2.up,
+                                randomPos - Vector2.right};
 
         foreach (var p in newPoints)
             if (!searchPoints.Contains(p) && !tilePoints.Contains(p))
@@ -32,21 +61,79 @@ public class DungeonGenV1 : MonoBehaviour
         searchPoints.Remove(randomPos);
         tilePoints.Add(randomPos);
     }
+    public void SpawnTiles()
+    {
+        foreach (var p in tilePoints)
+        {
+            DungeonTile d = Instantiate(TilePref, transform).GetComponent<DungeonTile>();
+            d.SetPosition(p);
+            tiles.Add(d);
+        }
+
+        DungeonTile spawnTile = tiles[Random.Range(0, tiles.Count)];
+        spawnTile.GenerateRoom(tilePoints, true);
+
+        foreach (var t in tiles)
+            if (t != spawnTile)
+                t.GenerateRoom(tilePoints);
+
+    }
     public void ClearTiles()
     {
+        if (tiles.Count > 0)
+        foreach (var t in tiles)
+        {
+            if (Application.isEditor)
+                DestroyImmediate(t.gameObject);
+            else
+                Destroy(t.gameObject);
+        }
+        tiles.Clear();
         tilePoints.Clear();
         searchPoints.Clear();
+
+
+        foreach (var e in spawnedEnemy)
+        {
+            if (Application.isEditor)
+                DestroyImmediate(e.gameObject);
+            else
+                Destroy(e.gameObject);
+        }
+        spawnedEnemy.Clear();
+
+        foreach (var l in spawnedLoot)
+        {
+            if (Application.isEditor)
+                DestroyImmediate(l.gameObject);
+            else
+                Destroy(l.gameObject);
+        }
+        spawnedLoot.Clear();
+        transform.localScale = Vector3.one;
         searchPoints.Add(Vector3.zero);
     }
-    private void OnDrawGizmos()
+    public void SpawnEnemy(Vector3 pos)
+    {
+        if (Random.value <= enemySpawnChance)
+            spawnedEnemy.Add(Instantiate(enemy, pos * scale, Quaternion.identity));
+    }
+
+    public void SpawnLoot(Vector3 pos)
+    {
+        if (Random.value <= lootSpawnChance)
+            spawnedLoot.Add(Instantiate(loot, pos * scale, Quaternion.identity));
+    }
+
+    private void OnDrawGizmosSelected()
     {
         Gizmos.color = Color.red;
         foreach (var p in searchPoints)
-            Gizmos.DrawSphere(p, size/2);
+            Gizmos.DrawSphere(p * size, size/2);
 
         Gizmos.color = Color.green;
         foreach (var p in tilePoints)
-            Gizmos.DrawSphere(p, size/2);
+            Gizmos.DrawSphere(p * size, size/2);
     }
 }
 
@@ -59,6 +146,8 @@ public class DungeonGenV1GUI : Editor
 
         DungeonGenV1 g = (DungeonGenV1)target;
 
+        if (GUILayout.Button("Generate All Cycles"))
+                g.GenerateAllCycles();
         if (GUILayout.Button("Generate Cycle"))
             g.GenerateCycle();
         if (GUILayout.Button("Clear Tiles"))
