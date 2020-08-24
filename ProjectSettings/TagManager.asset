@@ -15,7 +15,7 @@ TagManager:
   - 
   - Player
   - Enemy
-  - Ground
+  - Walls
   - 
   - 
   - 
@@ -38,10 +38,10 @@ TagManager:
   - 
   - Post Processing
   m_SortingLayers:
-  - name: BG
+  - name: Ground
     uniqueID: 2471003105
     locked: 0
-  - name: Terrain
+  - name: Walls
     uniqueID: 3675419067
     locked: 0
   - name: Default
