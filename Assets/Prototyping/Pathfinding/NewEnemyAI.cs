@@ -16,8 +16,10 @@ public class NewEnemyAI : MonoBehaviour
     public float accel = 10;
     public Vector2 goalVel;
 
-    public float lookAngle;
     public float turnSpeed = 20;
+
+    public FOV fov;
+
     Path path;
     int currentWaypoint = 0;
     bool reachedEndOfPath;
@@ -54,21 +56,29 @@ public class NewEnemyAI : MonoBehaviour
     }
     void FixedUpdate()
     {
-        SearchFOV();
+        SearchEnemies();
         Pathfind();
     }
-    //fix this not working
-    private void LookAtPos(Vector3 position) => LookInDir((target.position - position).normalized);
+    /*private void LookAtPos(Vector3 position) => LookInDir((target.position - position).normalized);
     private void LookInDir(Vector3 dir)
     {
         float newLookAngle = Mathf.Atan2(dir.y, dir.x) * Mathf.Rad2Deg;
         lookAngle = Mathf.Lerp(lookAngle, newLookAngle, turnSpeed * Time.deltaTime);
         transform.localEulerAngles = new Vector3(0, 0, lookAngle);
-    }
+    }*/
 
-    private void SearchFOV()
+    private void SearchEnemies()
     {
 
+    }
+    List<Entity> FindEntities()
+    {
+        List<Entity> entities = new List<Entity>();
+
+
+
+
+        return entities;
     }
     private void Pathfind()
     {
@@ -94,10 +104,10 @@ public class NewEnemyAI : MonoBehaviour
 
         goalVel = force;
 
-        if (Physics2D.Linecast(transform.position, target.position, LayerMask.NameToLayer("Walls")))
+        /*if (Physics2D.Linecast(transform.position, target.position, LayerMask.NameToLayer("Walls")))
             LookInDir(dir);
         else
-            LookAtPos(target.position);
+            LookAtPos(target.position);*/
 
         float distance = Vector2.Distance(rb.position, path.vectorPath[currentWaypoint]);
 
@@ -112,5 +122,15 @@ public class NewEnemyAI : MonoBehaviour
             currentWaypoint = 0;
         }
     }
-
+    private void Control()
+    {
+        //look for entities
+        //if found enemy
+            //set target to enemy position
+        //pathfind
+    }
+    private void OnDrawGizmos()
+    {
+        fov.DrawDebug(transform);
+    }
 }
