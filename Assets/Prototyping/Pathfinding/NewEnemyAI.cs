@@ -3,9 +3,9 @@ using System.Collections.Generic;
 using UnityEngine;
 using Pathfinding;
 
-public class NewEnemyAI : MonoBehaviour
+//convert to be more general
+public class NewEnemyAI : Entity
 {
-
     public Transform target;
 
     public float speed = 20;
@@ -17,25 +17,37 @@ public class NewEnemyAI : MonoBehaviour
     public Vector2 goalVel;
 
     public float turnSpeed = 20;
+    public bool randomLook;
+    public float lookAngle;
 
     public FOV fov;
+
+    public LayerMask groundLayer;
 
     Path path;
     int currentWaypoint = 0;
     bool reachedEndOfPath;
 
     Seeker seeker;
-    Rigidbody2D rb;
 
-    // Start is called before the first frame update
-    void Start()
+    public override void Start()
     {
+        base.Start();
         seeker = GetComponent<Seeker>();
-        rb = GetComponent<Rigidbody2D>();
         InvokeRepeating(nameof(FindPath), 0, 0.25f);
+        InvokeRepeating(nameof(RandomLookAngle), 1, 3f);
+        lookAngle = transform.eulerAngles.z;
     }
+    private void RandomLookAngle()
+    {
+        if (!randomLook)
+            return;
+        lookAngle = Random.value * 360;
+                }
     private void FindPath()
     {
+        if (!target)
+            return;
         if (sqrDistFromTarget > minDistance * minDistance)
         {
             if (seeker.IsDone())
@@ -49,6 +61,8 @@ public class NewEnemyAI : MonoBehaviour
     private void Update()
     {
         Move();
+        transform.localEulerAngles = new Vector3(0, 0, Mathf.Lerp(transform.localEulerAngles.z, lookAngle, turnSpeed/2 * Time.deltaTime));
+
     }
     private void Move()
     {
@@ -57,28 +71,42 @@ public class NewEnemyAI : MonoBehaviour
     void FixedUpdate()
     {
         SearchEnemies();
+
+        randomLook = false;
+        if (target)
+            LookAtPos(target.position);
+        else if (path != null && currentWaypoint < path.vectorPath.Count)
+            LookAtPos(path.vectorPath[currentWaypoint]);
+        else
+            randomLook = true;
+
+        
         Pathfind();
     }
-    /*private void LookAtPos(Vector3 position) => LookInDir((target.position - position).normalized);
+    private void LookAtPos(Vector3 position) => LookInDir((position - transform.position).normalized);
     private void LookInDir(Vector3 dir)
     {
-        float newLookAngle = Mathf.Atan2(dir.y, dir.x) * Mathf.Rad2Deg;
-        lookAngle = Mathf.Lerp(lookAngle, newLookAngle, turnSpeed * Time.deltaTime);
-        transform.localEulerAngles = new Vector3(0, 0, lookAngle);
-    }*/
+        lookAngle = Mathf.Atan2(dir.y, dir.x) * Mathf.Rad2Deg;
+        //lookAngle = Mathf.Lerp(lookAngle, newLookAngle, turnSpeed * Time.deltaTime);
+        //transform.localEulerAngles = new Vector3(0, 0, lookAngle);
+    }
 
     private void SearchEnemies()
     {
-
+        //get entities
+        List<Entity> targets = fov.GetObjectsInView<Entity>(transform, transform.right, groundLayer);
+        //filter entities
+        if (targets.Contains(GetComponent<Entity>()))
+            targets.Remove(GetComponent<Entity>());
+        //select target
+        if (targets.Count > 0)
+            target = targets[0].transform;
+        else
+            target = null;
     }
-    List<Entity> FindEntities()
-    {
-        List<Entity> entities = new List<Entity>();
-
-
-
-
-        return entities;
+    private void LookAtTarget()
+    { 
+        
     }
     private void Pathfind()
     {

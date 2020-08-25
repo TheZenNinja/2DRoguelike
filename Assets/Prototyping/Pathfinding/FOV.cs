@@ -12,7 +12,7 @@ public class FOV
     [Range(0, 360)]
     public float angle;
 
-    public List<T> GetObjectsInView<T>(Transform root, Vector2 dir, LayerMask layerMask)
+    public List<T> GetObjectsInView<T>(Transform root, Vector2 dir, LayerMask groundLayer)
     {
         List<T> list = new List<T>();
 
@@ -25,9 +25,12 @@ public class FOV
             {
                 Vector2 dirToTarget = (c.transform.position - root.position).normalized;
                 if (Vector2.Angle(dir, dirToTarget) <= angle / 2)
-                    if (!Physics2D.Linecast(root.position, c.transform.position, layerMask))
+                {
+                    //if (Physics2D.Raycast(root.position, dirToTarget, groundLayer).transform == c.transform)
+                        if (Physics2D.Linecast(root.position, c.transform.position, groundLayer).collider == null)
                         if (!list.Contains(t))
                             list.Add(t);
+                }
             }
         }
 

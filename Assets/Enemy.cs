@@ -17,7 +17,7 @@ public class Enemy : MonoBehaviour
 
     public Entity player;
 
-    private void Start()
+    public void Start()
     {
         e = GetComponent<Entity>();
         e.onDie += Die;

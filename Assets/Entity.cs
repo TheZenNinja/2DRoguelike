@@ -22,18 +22,18 @@ public class Entity : MonoBehaviour
     public float hitStun = 0.1f;
     private float hitStunCounter;
 
-    Rigidbody2D rb;
+    protected Rigidbody2D rb;
 
     public Action onDie;
     public Action onDamage;
 
-    private void Start()
+    public virtual void Start()
     {
         currentHealth = maxHealth;
         rb = GetComponent<Rigidbody2D>();
     }
 
-    private void Update()
+    /*private void Update()
     {
         if (hitStunCounter > 0)
         {
@@ -47,7 +47,7 @@ public class Entity : MonoBehaviour
             hitStunCounter = 0;
             sprite.color = Color.white;
         }
-    }
+    }*/
     public void Hit(Vector2 hitForce, int damage = 1)
     {
         if (!beingHit)
