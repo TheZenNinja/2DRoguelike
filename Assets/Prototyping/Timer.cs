@@ -3,21 +3,91 @@ using System.Collections.Generic;
 using UnityEngine;
 using System;
 
-namespace ZenClasses
+namespace ZenUtil
 {
+    public class TimerMonoHook : MonoBehaviour
+    {
+        public static TimerMonoHook Create(Action update, GameObject obj = null)
+        {
+            if (obj == null)
+            {
+                obj = new GameObject();
+                obj.name = "Timer Hook";
+            }
+            TimerMonoHook hook = obj.AddComponent<TimerMonoHook>();
+            hook.onUpdate = update;
+            return hook;
+        }
+        public Action onUpdate;
+
+        private void Update() => onUpdate?.Invoke();
+
+        public void Destroy()
+        {
+            if (GetComponents<TimerMonoHook>().Length <= 1)
+                Destroy(gameObject);
+            else
+                Destroy(this);
+        }
+    }
+    public class OneTimeTimer
+    {
+        public static OneTimeTimer StartTimer(float length, Action action)
+        {
+            OneTimeTimer timer = new OneTimeTimer(length, action);
+            GameObject g = new GameObject();
+            TimerMonoHook hook = g.AddComponent<TimerMonoHook>();
+            hook.onUpdate = timer.Update;
+            timer.hook = hook;
+            return timer;
+        }
+
+        public OneTimeTimer(float timerLength, Action onTimeEnd)
+        {
+            this.timerLength = timerLength;
+            this.onTimeEnd = onTimeEnd;
+            currentTime = 0;
+        }
+
+        public Action onTimeEnd;
+        public float timerLength;
+        private float currentTime;
+        private TimerMonoHook hook;
+
+        public float percent { get { return currentTime / timerLength; } }
+
+        public void Update()
+        {
+            timerLength += Time.deltaTime;
+            if (currentTime <= timerLength)
+                Complete();
+        }
+        public void Complete() => hook.Destroy();
+    }
     [Serializable]
     public class Timer
     {
         public float timerLength;
         private float currentTime;
 
-        private bool testing = false;
+        public bool fixedTime = false;
+        public bool testing = false;
         public float percent { get { return currentTime / timerLength; } }
         public bool finished { get { return !testing; } }
         public Action onTimeEnd;
+        private bool madeHook = false;
+        private TimerMonoHook hook;
+
+        public void AttachHookToObj(GameObject obj)
+        {
+            madeHook = true;
+            hook = TimerMonoHook.Create(Update, obj);
+        }
 
         public void Start()
         {
+            if (!madeHook)
+                CreateHook();
             testing = true;
             currentTime = timerLength;
         }
@@ -28,16 +98,17 @@ namespace ZenClasses
             currentTime = 0;
             testing = false;
         }
-        public void Pause()
-        {
-            testing = false;
-        }
+        public void Pause() => testing = false;
+        public void Resume() => testing = true;
 
-        public void Update(float timeDelta)
+        public void Update()
         {
             if (testing)
             {
-                currentTime -= timeDelta;
+                if (fixedTime)
+                    currentTime -= Time.unscaledDeltaTime;
+                else
+                    currentTime -= Time.deltaTime;
                 if (currentTime <= 0)
                 {
                     currentTime = 0;
@@ -47,6 +118,18 @@ namespace ZenClasses
             }
         }
 
+        public void CreateHook()
+        {
+            madeHook = true;
+            hook = TimerMonoHook.Create(Update);
+        }
+        public void DestroyHook()
+        {
+            madeHook = false;
+            if (hook)
+                hook.Destroy();
+            hook = null;
+        }
         public static implicit operator float(Timer t) => t.currentTime;
     }
 }

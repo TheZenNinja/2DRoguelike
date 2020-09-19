@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using System;
-using ZenClasses;
+using ZenUtil;
 using TMPro;
 using UnityEngine.UI;
 
@@ -31,7 +31,7 @@ public class ComboController : MonoBehaviour
 
     void Update()
     {
-        comboTimer.Update(Time.deltaTime);
+        //comboTimer.Update(Time.deltaTime);
         comboDecay.value = comboTimer.percent;
     }
     public void LightAttack()

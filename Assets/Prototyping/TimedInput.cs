@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace ZenClasses
+namespace ZenUtil
 {
     [Serializable]
     public class TimedInput
@@ -15,24 +15,29 @@ namespace ZenClasses
 
         public Action tapAction, holdAction, prereleaseAction;
 
-        public void SetupTapOnly(Action tap) => tapAction = tap;
-
+        public void SetupTapOnly(Action tap)
+        {
+            tapAction = tap;
+            TimerMonoHook.Create(Update);
+        }
         public void Setup(Action tap, Action hold)
         {
             tapAction = tap;
             holdAction = hold;
+            TimerMonoHook.Create(Update);
         }
         public void Setup(Action tap, Action hold, Action release)
         {
             tapAction = tap;
             holdAction = hold;
             prereleaseAction = release;
+            TimerMonoHook.Create(Update);
         }
 
-        public void Update(float timeIncrement)
+        public void Update()
         {
             if (testing)
-                timer += timeIncrement;
+                timer += Time.deltaTime;
 
             if (testing && timer >= timeWindow)
             {

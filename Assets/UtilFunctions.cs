@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 
 
-namespace ZenClasses
+namespace ZenUtil
 {
     public static class UtilFunctions
     {

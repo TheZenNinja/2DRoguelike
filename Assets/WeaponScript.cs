@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 using System.Collections;
-using ZenClasses;
+using ZenUtil;
 using System;
 
 public class WeaponScript : EquipmentBase
@@ -53,7 +53,7 @@ public class WeaponScript : EquipmentBase
     }
     public override void HandleInput()
     {
-        fireRate.Update(Time.deltaTime);
+        //fireRate.Update(Time.deltaTime);
 
         if (reloading)
             return;

@@ -7,8 +7,8 @@ public class EquipmentManager : MonoBehaviour
 {
     public PrototypeWeaponItem[] weaponItems = new PrototypeWeaponItem[3];
     public int weaponIndex;
-    public IWeaponInterface[] weaponObjs = new IWeaponInterface[3];
-    private IWeaponInterface currentWeapon => weaponObjs[weaponIndex];
+    public WeaponBase[] weaponObjs = new WeaponBase[3];
+    private WeaponBase currentWeapon => weaponObjs[weaponIndex];
 
     public Transform playerHands;
     public PlayerControl playerControl;
@@ -20,7 +20,7 @@ public class EquipmentManager : MonoBehaviour
     {
         for (int i = 0; i < weaponItems.Length; i++)
         {
-            var e = Instantiate(weaponItems[i].prefab, weaponRoot).GetComponent<IWeaponInterface>();
+            var e = Instantiate(weaponItems[i].prefab, weaponRoot).GetComponent<WeaponBase>();
             Debug.Log(e);
             weaponObjs[i] = e;
         }
@@ -46,7 +46,7 @@ public class EquipmentManager : MonoBehaviour
         for (int i = 0; i < weaponObjs.Length; i++)
         {
             if (i == index)
-                weaponObjs[i].Equip();
+                weaponObjs[i].Equip(anim);
             else
                 weaponObjs[i].Unequip();
         }

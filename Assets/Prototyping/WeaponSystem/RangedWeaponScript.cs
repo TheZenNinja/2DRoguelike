@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 using System.Collections;
-using ZenClasses;
+using ZenUtil;
 using System;
 namespace WeaponSystem
 {
@@ -52,7 +52,7 @@ namespace WeaponSystem
         }
         public void HandleInput()
         {
-            fireRate.Update(Time.deltaTime);
+            //fireRate.Update(Time.deltaTime);
 
             if (reloading)
                 return;
@@ -82,9 +82,7 @@ namespace WeaponSystem
             fireRate.Restart();
 
             GameObject g = Instantiate(projectilePref, GetBarrelPos(), Quaternion.identity);
-            Debug.Log(g);
             ProjectileScript proj = g.GetComponent<ProjectileScript>();
-            Debug.Log(proj);
 
             float angle = CursorControl.instance.GetAngleFromHand();
             if (clipAmmo.x < clipAmmo.y)

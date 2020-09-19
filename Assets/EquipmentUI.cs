@@ -12,9 +12,9 @@ public class EquipmentUI : MonoBehaviour
     public GameObject bowUI;
     public Slider bowCharge;
     public Image bowChargeSprite;
-    IWeaponInterface currentWeapon;
+    WeaponBase currentWeapon;
 
-    public void SetWeapon(IWeaponInterface weapon) => currentWeapon = weapon;
+    public void SetWeapon(WeaponBase weapon) => currentWeapon = weapon;
     public void Update()
     {
         if (currentWeapon != null)

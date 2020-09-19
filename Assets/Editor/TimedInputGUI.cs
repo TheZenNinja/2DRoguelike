@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEditor;
 
-namespace ZenClasses
+namespace ZenUtil
 {
     [CustomPropertyDrawer(typeof(TimedInput))]
     [CanEditMultipleObjects]

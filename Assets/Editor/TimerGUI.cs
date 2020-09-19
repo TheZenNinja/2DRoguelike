@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 using UnityEditor;
 
-namespace ZenClasses
+namespace ZenUtil
 {
     [CanEditMultipleObjects]
     [CustomPropertyDrawer(typeof(Timer))]

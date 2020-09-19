@@ -16,6 +16,7 @@ public class ProjectileScript : MonoBehaviour
 
     Rigidbody2D rb;
     public LayerMask targetLayer;
+    public LayerMask groundLayer;
 
     void Awake()
     {
@@ -67,7 +68,7 @@ public class ProjectileScript : MonoBehaviour
                     break;
             }
         }
-        if (collision.gameObject.layer == LayerMask.NameToLayer("Walls"))
+        if (groundLayer == (groundLayer | (1 << collision.gameObject.layer)))
         {
             if (type != ProjectileType.sticking)
                 Destroy(gameObject);

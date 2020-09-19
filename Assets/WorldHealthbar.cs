@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
-using ZenClasses;
+using ZenUtil;
 
 public class WorldHealthbar : MonoBehaviour
 {
@@ -25,7 +25,7 @@ public class WorldHealthbar : MonoBehaviour
     {
         if (entity)
         {
-            hideTimer.Update(Time.deltaTime);
+            //hideTimer.Update(Time.deltaTime);
             uiObj.SetActive(!hideTimer.finished);
             hpBar.value = entity.healthPercent;
         }
