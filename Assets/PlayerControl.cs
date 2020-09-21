@@ -36,6 +36,10 @@ public class PlayerControl : MonoBehaviour
 
     public static event System.Action onDodge;
 
+    public Transform model;
+    public Transform handAnim;
+
+    public bool isFlipped;
     [SerializeField] Collider2D footCol;
 
     float xVelSmoothing = 0;
@@ -61,8 +65,9 @@ public class PlayerControl : MonoBehaviour
     }
     public void HandleInput()
     {
-        //add dashing
-
+        isFlipped = transform.position.x > Camera.main.ScreenToWorldPoint(Input.mousePosition).x;
+        model.localScale = isFlipped ? new Vector3(-1,1,1) : new Vector3(1, 1, 1);
+        handAnim.localScale = isFlipped ? new Vector3(1, -1, 1) : new Vector3(1, 1, 1);
 
         inputDir = new Vector2(Input.GetAxisRaw("Horizontal"), Input.GetAxisRaw("Vertical"));
         sprinting = Input.GetKey(KeyCode.LeftShift);

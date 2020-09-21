@@ -5,6 +5,9 @@ using WeaponSystem;
 
 public class EquipmentManager : MonoBehaviour
 {
+    public static EquipmentManager instance;
+    public EquipmentManager() => instance = this;
+
     public PrototypeWeaponItem[] weaponItems = new PrototypeWeaponItem[3];
     public int weaponIndex;
     public WeaponBase[] weaponObjs = new WeaponBase[3];
@@ -24,7 +27,6 @@ public class EquipmentManager : MonoBehaviour
             Debug.Log(e);
             weaponObjs[i] = e;
         }
-
         SwapWeapon(0);
     }
 

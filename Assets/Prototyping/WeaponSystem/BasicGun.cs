@@ -47,6 +47,7 @@ namespace WeaponSystem
         {
             audioSource.Play();
             fireRate.Restart();
+            anim.SetTrigger("Throw");
 
             float angle = GetHandAngle();
             if (!clipAmmo.maxed)

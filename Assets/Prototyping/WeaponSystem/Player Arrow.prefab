@@ -12,6 +12,11 @@ PrefabInstance:
       propertyPath: gravity
       value: 6
       objectReference: {fileID: 0}
+    - target: {fileID: -2366748262035262773, guid: 86ce4c8689b97e44695424c0615b4568,
+        type: 3}
+      propertyPath: useGrav
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 1125110487215494845, guid: 86ce4c8689b97e44695424c0615b4568,
         type: 3}
       propertyPath: m_Offset.x

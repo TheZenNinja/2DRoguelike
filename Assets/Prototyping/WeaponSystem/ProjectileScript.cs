@@ -22,6 +22,8 @@ public class ProjectileScript : MonoBehaviour
     public float gravity = 0;
 
     public AudioClip hitSound;
+    public ParticleSystem hitParticle;
+    public ParticleSystem destroyParticle;
 
     void Awake()
     {
@@ -44,7 +46,7 @@ public class ProjectileScript : MonoBehaviour
         transform.eulerAngles = new Vector3(0, 0, angle);
         rb.velocity = transform.right * speed;
         if (type != ProjectileType.sticking)
-            Destroy(gameObject, 30f);
+            Destroy(gameObject, 30);
 
         useGrav = gravity != 0;
     }
@@ -52,7 +54,14 @@ public class ProjectileScript : MonoBehaviour
     private void OnTriggerEnter2D(Collider2D collision)
     {
         //learn this
-        if (targetLayer == (targetLayer | (1 << collision.gameObject.layer)))
+        if (groundLayer == (groundLayer | (1 << collision.gameObject.layer)))
+        {
+            AudioSource.PlayClipAtPoint(hitSound, transform.position);
+            if (type != ProjectileType.sticking)
+                Destroy();
+            StickProjectile(collision.transform);
+        }
+        else if (targetLayer == (targetLayer | (1 << collision.gameObject.layer)))
         {
             Entity e = collision.GetComponent<Entity>();
             if (e)
@@ -63,7 +72,7 @@ public class ProjectileScript : MonoBehaviour
             {
                 default:
                 case ProjectileType.none:
-                Destroy(gameObject);
+                    Destroy();
                     break;
                 case ProjectileType.piercing:
                     break;
@@ -73,20 +82,27 @@ public class ProjectileScript : MonoBehaviour
                         if (e)
                             GetComponent<RecallDamageComponent>().SetEntity(e);
 
-                        rb.velocity = Vector2.zero;
-                        transform.parent = collision.transform;
-                        useGrav = false;
-                        this.enabled = false;
+                        StickProjectile(collision.transform);
                     }
                     break;
             }
         }
-        else if (groundLayer == (groundLayer | (1 << collision.gameObject.layer)))
+    }
+    public void StickProjectile(Transform obj)
+    {
+        rb.velocity = Vector2.zero;
+        transform.parent = obj;
+        useGrav = false;
+        this.enabled = false;
+    }
+    public void Destroy()
+    {
+        if (destroyParticle != null)
         {
-            AudioSource.PlayClipAtPoint(hitSound, transform.position);
-            if (type != ProjectileType.sticking)
-                Destroy(gameObject);
-            useGrav = false;
+            var obj = Instantiate<ParticleSystem>(destroyParticle, transform.position, transform.rotation, null);
+            Debug.Log(obj);
+            obj.gameObject.SetActive(true);
         }
+        Destroy(gameObject);
     }
 }

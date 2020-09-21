@@ -26,7 +26,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1750135627712712376}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0.1, y: 0, z: 0}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 1750135628651199982}
@@ -53,8 +53,8 @@ MonoBehaviour:
   auto: 0
   damage: 10
   speed: 25
-  accuracyAngle: 30
-  spawnPos: {x: 0, y: 0, z: 0}
+  accuracyAngle: 5
+  spawnPos: {x: 0.3, y: 0, z: 0}
   RPM: 100
   fireRate:
     timerLength: 0
@@ -64,11 +64,6 @@ MonoBehaviour:
   projectilePref: {fileID: 628874458781360560, guid: a520430faffc0304cb6ccd7192732fc4,
     type: 3}
   reloadDuration: 1
-  charging: 0
-  chargeTime: 1
-  currentCharge: 0
-  minSpeed: 5
-  minDamage: 2
 --- !u!82 &4817752965712511543
 AudioSource:
   m_ObjectHideFlags: 0
@@ -355,7 +350,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1816333499861497488}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0.2, y: 0.1, z: 0}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1.5, y: 1.5, z: 1}
   m_Children: []
   m_Father: {fileID: 1750135627712712379}

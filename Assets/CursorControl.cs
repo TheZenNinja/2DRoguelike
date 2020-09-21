@@ -5,8 +5,15 @@ using UnityEngine;
 public class CursorControl : MonoBehaviour
 {
     public static CursorControl instance;
-    public Transform playerHandDir;
     public CursorControl() => instance = this;
+
+    public bool lookAtCursor;
+    public Transform playerHandDir;
+
+    private void Start()
+    {
+        lookAtCursor = true;
+    }
     public Vector2 GetDirFromHand()
     {
         return GetMouseDir(playerHandDir.position);
@@ -18,7 +25,15 @@ public class CursorControl : MonoBehaviour
 
     public void Update()
     {
-        playerHandDir.eulerAngles = new Vector3(0,0, GetAngleFromHand());
+        if (lookAtCursor)
+            playerHandDir.eulerAngles = new Vector3(0,0, GetAngleFromHand());
+        else
+            //playerHandDir.localEulerAngles =  Vector3.zero;
+            playerHandDir.localEulerAngles = PlayerControl.instance.isFlipped ? Vector3.forward * 180 : Vector3.zero;
+    }
+    public void SetLookAtCursor(bool value)
+    {
+        lookAtCursor = value;
     }
 
     public static Vector2 GetMouseDir(Vector3 pos)
