@@ -18,13 +18,23 @@ public class ProjectileScript : MonoBehaviour
     public LayerMask targetLayer;
     public LayerMask groundLayer;
 
+    public bool useGrav;
+    public float gravity = 0;
+
+    public AudioClip hitSound;
+
     void Awake()
     {
         rb = GetComponent<Rigidbody2D>();
         rb.freezeRotation = true;
     }
-    private void Start()
+    private void Update()
     {
+        if (useGrav)
+        {
+            rb.velocity -= new Vector2(0, gravity * Time.deltaTime);
+            transform.right = rb.velocity.normalized;
+        }
     }
     public void Setup(int damage, float speed, float angle, ProjectileType type)
     {
@@ -34,8 +44,9 @@ public class ProjectileScript : MonoBehaviour
         transform.eulerAngles = new Vector3(0, 0, angle);
         rb.velocity = transform.right * speed;
         if (type != ProjectileType.sticking)
-            Destroy(gameObject, 10f);
+            Destroy(gameObject, 30f);
 
+        useGrav = gravity != 0;
     }
 
     private void OnTriggerEnter2D(Collider2D collision)
@@ -46,6 +57,7 @@ public class ProjectileScript : MonoBehaviour
             Entity e = collision.GetComponent<Entity>();
             if (e)
                 e.Damage(damage);
+            AudioSource.PlayClipAtPoint(hitSound, transform.position);
 
             switch (type)
             {
@@ -63,15 +75,18 @@ public class ProjectileScript : MonoBehaviour
 
                         rb.velocity = Vector2.zero;
                         transform.parent = collision.transform;
+                        useGrav = false;
                         this.enabled = false;
                     }
                     break;
             }
         }
-        if (groundLayer == (groundLayer | (1 << collision.gameObject.layer)))
+        else if (groundLayer == (groundLayer | (1 << collision.gameObject.layer)))
         {
+            AudioSource.PlayClipAtPoint(hitSound, transform.position);
             if (type != ProjectileType.sticking)
                 Destroy(gameObject);
+            useGrav = false;
         }
     }
 }

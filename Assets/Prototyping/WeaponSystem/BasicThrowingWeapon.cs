@@ -6,9 +6,9 @@ namespace WeaponSystem
 {
     public class BasicThrowingWeapon : BasicGun
     {
-        public override GameObject SpawnBullet(Vector3 pos, float angle)
+        public override GameObject SpawnProjectile(Vector3 pos, float angle)
         {
-            var g = base.SpawnBullet(pos, angle);
+            var g = base.SpawnProjectile(pos, angle);
             var proj = g.GetComponent<ProjectileScript>();
 
             if (projectileType == ProjectileType.sticking)

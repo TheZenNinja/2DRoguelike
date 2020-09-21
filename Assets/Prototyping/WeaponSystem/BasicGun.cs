@@ -52,7 +52,7 @@ namespace WeaponSystem
             if (!clipAmmo.maxed)
                 angle += GetRandomSpread();
 
-            SpawnBullet(GetBarrelPos(), angle);
+            SpawnProjectile(GetBarrelPos(), angle);
 
             clipAmmo--;
         }
@@ -95,9 +95,9 @@ namespace WeaponSystem
             reloading = false;
         }
 
-
         public override void Unequip()
         {
+            base.Unequip();
             reloading = false;
         }
     }

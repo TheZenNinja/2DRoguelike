@@ -49,7 +49,7 @@ namespace WeaponSystem
         {
             return UnityEngine.Random.Range(-accuracyAngle / 2, accuracyAngle / 2);
         }
-        public virtual GameObject SpawnBullet(Vector3 pos, float angle)
+        public virtual GameObject SpawnProjectile(Vector3 pos, float angle)
         {
             GameObject g = Instantiate(projectilePref, GetBarrelPos(), Quaternion.identity);
             ProjectileScript proj = g.GetComponent<ProjectileScript>();
@@ -79,7 +79,7 @@ namespace WeaponSystem
         }
         public override void Unequip()
         {
-            throw new NotImplementedException();
+            gameObject.SetActive(false);
         }
         protected virtual void OnDestroy()
         {

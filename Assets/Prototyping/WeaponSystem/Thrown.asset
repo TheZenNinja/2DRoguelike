@@ -14,8 +14,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   data:
     name: 
-    type: 0
+    type: 2
     damage: 1
     crit: 1
     desc: 
-  prefab: {fileID: 1750135627712712376, guid: d6c1af5ec28853d448a7c7a3897b8114, type: 3}
+  prefab: {fileID: 1750135627712712376, guid: 5028134c9c81eb44b9fff619dcde4aae, type: 3}
