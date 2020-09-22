@@ -27,7 +27,6 @@ public class DungeonGenV1 : MonoBehaviour
 
     public GameObject enemy;
     public GameObject loot;
-    public GameObject player;
 
     void Start()
     {
@@ -42,8 +41,7 @@ public class DungeonGenV1 : MonoBehaviour
         SpawnTiles();
 
         transform.localScale = Vector3.one * scale;
-        player.transform.position = spawnPos * scale;
-        
+        spawnPos = tiles.Find(x => x.type == TileType.spawn).GetSpecialPos();
     }
     public void GenerateCycle()
     {
@@ -70,11 +68,22 @@ public class DungeonGenV1 : MonoBehaviour
             tiles.Add(d);
         }
 
-        DungeonTile spawnTile = tiles[Random.Range(0, tiles.Count)];
-        spawnTile.GenerateRoom(tilePoints, true);
+        DungeonTile tile;
+
+        do
+        {
+            tile = tiles[Random.Range(0, tiles.Count)];
+        } while (tile.generated);
+        tile.GenerateRoom(tilePoints, TileType.spawn);
+
+        do
+        {
+            tile = tiles[Random.Range(0, tiles.Count)];
+        } while (tile.generated);
+        tile.GenerateRoom(tilePoints, TileType.exit);
 
         foreach (var t in tiles)
-            if (t != spawnTile)
+            if (!t.generated)
                 t.GenerateRoom(tilePoints);
 
     }
@@ -113,7 +122,7 @@ public class DungeonGenV1 : MonoBehaviour
         transform.localScale = Vector3.one;
         searchPoints.Add(Vector3.zero);
     }
-    public void SpawnEnemy(Vector3 pos)
+    /*public void SpawnEnemy(Vector3 pos)
     {
         if (Random.value <= enemySpawnChance)
             spawnedEnemy.Add(Instantiate(enemy, pos * scale, Quaternion.identity));
@@ -123,9 +132,9 @@ public class DungeonGenV1 : MonoBehaviour
     {
         if (Random.value <= lootSpawnChance)
             spawnedLoot.Add(Instantiate(loot, pos * scale, Quaternion.identity));
-    }
+    }*/
 
-    private void OnDrawGizmosSelected()
+    /*private void OnDrawGizmosSelected()
     {
         Gizmos.color = Color.red;
         foreach (var p in searchPoints)
@@ -134,7 +143,7 @@ public class DungeonGenV1 : MonoBehaviour
         Gizmos.color = Color.green;
         foreach (var p in tilePoints)
             Gizmos.DrawSphere(p * size, size/2);
-    }
+    }*/
 }
 
 [CustomEditor(typeof(DungeonGenV1))]

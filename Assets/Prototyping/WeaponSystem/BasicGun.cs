@@ -22,7 +22,7 @@ namespace WeaponSystem
         }
         [SerializeField]
         protected bool _reloading = false;
-        protected bool canReload => !clipAmmo.maxed;
+        protected bool canReload => !clipAmmo.atMax;
 
         protected override void Start()
         {
@@ -50,7 +50,7 @@ namespace WeaponSystem
             anim.SetTrigger("Throw");
 
             float angle = GetHandAngle();
-            if (!clipAmmo.maxed)
+            if (!clipAmmo.atMax)
                 angle += GetRandomSpread();
 
             SpawnProjectile(GetBarrelPos(), angle);

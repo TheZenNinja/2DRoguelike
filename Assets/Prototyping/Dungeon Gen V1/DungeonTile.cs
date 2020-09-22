@@ -4,12 +4,14 @@ using UnityEngine;
 using UnityEngine.Tilemaps;
 public class DungeonTile : MonoBehaviour
 {
+    public TileType type;
     public float size;
     public Vector2 gridPos;
-    public TileBase wallTile, floorTile;
+    public int doorSize;
+    public bool generated = false;
+    public TileBase wallTile, floorTile, platformTile;
     public Tilemap wallMap;
-    public TileLayout[] layouts;
-    public TileLayout spawn;
+    public List<TileLayout> layouts;
     public void SetPosition(Vector2 gridPos)
     {
         this.gridPos = gridPos;
@@ -17,40 +19,72 @@ public class DungeonTile : MonoBehaviour
     }
     [ContextMenu("Check Walls")]
 
-    public void GenerateRoom(List<Vector2> tilePos, bool spawnRoom = false)
+    public void GenerateRoom(List<Vector2> tilePos, TileType type = TileType.none)
     {
         CreateWalls(tilePos);
-        GenerateInterior(spawnRoom);
-
+        GenerateInterior(type);
+        this.type = type;
         wallMap.GetComponent<CompositeCollider2D>().GenerateGeometry();
+        generated = true;
     }
 
     public void CreateWalls(List<Vector2> tilePos)
     {
-        if (!tilePos.Contains(gridPos + Vector2.up))
-            wallMap.SetTiles(new Vector3Int[] { new Vector3Int(-2, 7, 0), new Vector3Int(-1, 7, 0), new Vector3Int(0, 7, 0), new Vector3Int(1, 7, 0) },
-                             new TileBase[] { wallTile, wallTile, wallTile, wallTile });
+        int halfSize = Mathf.RoundToInt(size / 2);
+        // ensures a platform
+        TileBase t = !tilePos.Contains(gridPos + Vector2.up) ? wallTile : platformTile;
+        for (int i = -doorSize/2; i < doorSize/2; i++)
+                wallMap.SetTile(new Vector3Int(i, halfSize - 1, 0), wallTile);
+
         if (!tilePos.Contains(gridPos - Vector2.up))
-                wallMap.SetTiles(new Vector3Int[] { new Vector3Int(-2, -8, 0), new Vector3Int(-1, -8, 0), new Vector3Int(0, -8, 0), new Vector3Int(1, -8, 0) },
-                                 new TileBase[] { wallTile, wallTile, wallTile, wallTile });
+            for (int i = -doorSize / 2; i < doorSize / 2; i++)
+                wallMap.SetTile(new Vector3Int(i, -halfSize, 0), wallTile);
+
 
         if (!tilePos.Contains(gridPos + Vector2.right))
-            wallMap.SetTiles(new Vector3Int[] { new Vector3Int(7, 1, 0), new Vector3Int(7, 0, 0), new Vector3Int(7, -1, 0), new Vector3Int(7, -2, 0) },
-                             new TileBase[] { wallTile, wallTile, wallTile, wallTile });
-        if (!tilePos.Contains(gridPos - Vector2.right))
-            wallMap.SetTiles(new Vector3Int[] { new Vector3Int(-8, 1, 0), new Vector3Int(-8, 0, 0), new Vector3Int(-8, -1, 0), new Vector3Int(-8, -2, 0) },
-                             new TileBase[] { wallTile, wallTile, wallTile, wallTile });
-    }
+            for (int i = -doorSize / 2; i < doorSize / 2; i++)
+                wallMap.SetTile(new Vector3Int(halfSize -1, i, 0), wallTile);
 
-    public void GenerateInterior(bool spawnRoom)
+        if (!tilePos.Contains(gridPos - Vector2.right))
+            for (int i = -doorSize / 2; i < doorSize / 2; i++)
+                wallMap.SetTile(new Vector3Int(-halfSize, i, 0), wallTile);
+    }
+    
+    public void GenerateInterior(TileType type)
     {
         TileLayout tile;
-        if (!spawnRoom)
-            tile = layouts[Random.Range(0, layouts.Length)];
-        else
-            tile = spawn;
+
+        switch (type)
+        {
+            default:
+            case TileType.none:
+                do
+                {
+                    tile = layouts[Random.Range(0, layouts.Count)];
+                } while (tile.type != TileType.none);
+                break;
+            case TileType.spawn:
+            tile = layouts.Find(x => x.type == TileType.spawn);
+                break;
+            case TileType.exit:
+            tile = layouts.Find(x => x.type == TileType.exit);
+                break;
+        }
 
         tile.gameObject.SetActive(true);
         tile.SetupTiles();
+    }
+    public TileLayout GetActiveLayout()
+    {
+        foreach (var t in layouts)
+            if (t.gameObject.activeSelf)
+                return t;
+        return null;
+    }
+    public Vector3 GetSpecialPos()
+    {
+        if (type == TileType.none)
+            throw new System.Exception("Not a special tile");
+        return transform.position + GetActiveLayout().specialPos;
     }
 }

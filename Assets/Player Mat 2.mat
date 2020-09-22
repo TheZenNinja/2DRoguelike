@@ -39,7 +39,7 @@ Material:
     m_Floats:
     - _EnableExternalAlpha: 0
     m_Colors:
-    - Color_8C9F814C: {r: 0, g: 0.39, b: 0.01949998, a: 1}
+    - Color_8C9F814C: {r: 0, g: 47.937256, b: 24.094118, a: 1}
     - _Color: {r: 1, g: 1, b: 1, a: 1}
     - _Flip: {r: 1, g: 1, b: 1, a: 1}
     - _RendererColor: {r: 1, g: 1, b: 1, a: 1}

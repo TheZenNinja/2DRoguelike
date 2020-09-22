@@ -5,28 +5,20 @@ using System;
 
 public class TileLayout : MonoBehaviour
 {
-    public bool spawn;
-    public Vector3 spawnPos;
+    public TileType type;
+    public Vector3 specialPos;
     public Vector3[] enemyPos;
     public Vector3[] lootPos;
 
     public void SetupTiles()
     {
-        DungeonGenV1 gen = GetComponentInParent<DungeonGenV1>();
-        if (spawn)
-            gen.spawnPos = spawnPos + transform.position;
 
-        foreach (var pos in enemyPos)
-            gen.SpawnEnemy(pos + transform.position);
-
-        foreach (var pos in lootPos)
-            gen.SpawnLoot(pos + transform.position);
     }
     private void OnDrawGizmosSelected()
     {
         Gizmos.color = Color.blue;
-        if (spawn)
-            Gizmos.DrawSphere(transform.position + spawnPos, 0.5f);
+        if (type != TileType.none)
+                Gizmos.DrawSphere(transform.position + specialPos, 0.5f);
 
         Gizmos.color = Color.red;
         if (enemyPos.Length > 0)

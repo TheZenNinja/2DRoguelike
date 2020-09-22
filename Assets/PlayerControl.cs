@@ -113,7 +113,7 @@ public class PlayerControl : MonoBehaviour
             if (moveVel.y < -0.1f)
                 moveVel.y = -0.1f;
             canJump = true;
-            if (!doubleJump.maxed)
+            if (!doubleJump.atMax)
                 doubleJump.SetToMax();
         }
         else

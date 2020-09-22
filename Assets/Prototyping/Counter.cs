@@ -12,7 +12,7 @@ namespace ZenUtil
         public int max;
         public int min;
         public int current;
-        public bool maxed => current >= max;
+        public bool atMax => current >= max;
         public bool atMin => current <= min;
 
         public Counter(int max) : this(max, 0, 0)
@@ -26,6 +26,7 @@ namespace ZenUtil
             this.current = current;
         }
         public void SetToMax() => current = max;
+        public void SetToMin() => current = min;
 
         public static implicit operator int(Counter c) => c.current;
 

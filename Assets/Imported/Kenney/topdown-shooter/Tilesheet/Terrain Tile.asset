@@ -10,7 +10,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 9d1514134bc4fbd41bb739b1b9a49231, type: 3}
-  m_Name: Wall Tile
+  m_Name: Terrain Tile
   m_EditorClassIdentifier: 
   m_DefaultSprite: {fileID: -6712833375419443488, guid: b3ef35641f3b1ac448096d6840abbdd4,
     type: 3}
