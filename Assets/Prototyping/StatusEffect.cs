@@ -5,15 +5,18 @@ using System.Collections.Generic;
 public enum StatusType
 {
     bleed,
-
+    stunned,
+    floating,
+    /*
     burning,    //fire
     frozen,     //water = slows entities, higher level stops movement entirely
     rooted,     //earth
-    stunned,
     blistered,  //air = take more damage
     shock,      //lightning
     confused,   //arcane
+    */
 }
+[Serializable]
 public class StatusEffect
 {
     public StatusType type;
@@ -39,5 +42,18 @@ public class StatusEffect
     public void Increase(float time)
     {
         duration += time;
+    }
+    public static StatusEffect operator +(StatusEffect a, StatusEffect b)
+    {
+        if (a.type != b.type)
+            throw new Exception("Not matching status types");
+
+        a.level += b.level;
+        a.duration += b.duration;
+        return a;
+    }
+    public static StatusEffect InflictStatus(StatusType type, float length)
+    {
+        return new StatusEffect() { type = type, level = 1, duration = length };
     }
 }

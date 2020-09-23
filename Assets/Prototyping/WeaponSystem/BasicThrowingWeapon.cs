@@ -19,5 +19,9 @@ namespace WeaponSystem
             }
             return g;
         }
+        public override void SwapAbility()
+        {
+            anim.SetTrigger("Swap");
+        }
     }
 }

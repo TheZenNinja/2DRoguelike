@@ -90,12 +90,26 @@ namespace WeaponSystem
             reloading = false;
         }
         public override string GetUIInfo() => clipAmmo.current + "/" + clipAmmo.max;
-        public override void Equip(Animator anim)
+        public override void SwapAbility()
         {
-            base.Equip(anim);
+            StartCoroutine(FireBurst());
+        }
+        IEnumerator FireBurst()
+        {
+            for (int i = 0; i < 4; i++)
+            {
+                Shoot();
+                if (clipAmmo.atMin)
+                    break;
+                yield return new WaitForSeconds(0.1f);
+            }
+            clipAmmo.SetToMax();
+        }
+        public override void Equip(Animator anim, bool suppressSwapEvent = false)
+        {
+            base.Equip(anim, suppressSwapEvent);
             reloading = false;
         }
-
         public override void Unequip()
         {
             base.Unequip();

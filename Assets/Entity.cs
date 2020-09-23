@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
 using System;
+using System.Collections.Generic;
 
 public enum EntityStat
 {
@@ -16,11 +17,7 @@ public class Entity : MonoBehaviour
 
     public float healthPercent { get { return (float)currentHealth / maxHealth; } }
 
-
-    public SpriteRenderer sprite;
-    public bool beingHit;
-    public float hitStun = 0.1f;
-    private float hitStunCounter;
+    public List<StatusEffect> statusEffects = new List<StatusEffect>();
 
     protected Rigidbody2D rb;
 
@@ -33,28 +30,20 @@ public class Entity : MonoBehaviour
         rb = GetComponent<Rigidbody2D>();
     }
 
-    /*private void Update()
+    public virtual void FixedUpdate()
     {
-        if (hitStunCounter > 0)
-        {
-            beingHit = true;
-            hitStunCounter -= Time.deltaTime;
-            sprite.color = Color.red;
-        }
-        else if (hitStunCounter < 0)
-        {
-            beingHit = false;
-            hitStunCounter = 0;
-            sprite.color = Color.white;
-        }
-    }*/
+        statusEffects.RemoveAll(x => x.duration >= 0);
+    }
+    public void InflictStatus(StatusEffect effect)
+    {
+        StatusEffect e = statusEffects.Find(x => x.type == effect.type);
+        if (e != null)
+            e += effect;
+        else
+            statusEffects.Add(effect);
+    }
     public void Hit(Vector2 hitForce, int damage = 1)
     {
-        if (!beingHit)
-            Damage(damage);
-
-        hitStunCounter = hitStun;
-
         rb.velocity = hitForce;
     }
 

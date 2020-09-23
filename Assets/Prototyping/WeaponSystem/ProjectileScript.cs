@@ -53,19 +53,16 @@ public class ProjectileScript : MonoBehaviour
 
     private void OnTriggerEnter2D(Collider2D collision)
     {
-        //learn this
-        if (groundLayer == (groundLayer | (1 << collision.gameObject.layer)))
-        {
-            AudioSource.PlayClipAtPoint(hitSound, transform.position);
-            if (type != ProjectileType.sticking)
-                Destroy();
-            StickProjectile(collision.transform);
-        }
-        else if (targetLayer == (targetLayer | (1 << collision.gameObject.layer)))
+        if (collision.isTrigger)
+            return;
+            //learn this
+        if (targetLayer == (targetLayer | (1 << collision.gameObject.layer)))
         {
             Entity e = collision.GetComponent<Entity>();
             if (e)
                 e.Damage(damage);
+
+
             AudioSource.PlayClipAtPoint(hitSound, transform.position);
 
             switch (type)
@@ -82,25 +79,32 @@ public class ProjectileScript : MonoBehaviour
                         if (e)
                             GetComponent<RecallDamageComponent>().SetEntity(e);
 
-                        StickProjectile(collision.transform);
+                        StickProjectile(collision.gameObject.transform);
                     }
                     break;
             }
+        }
+        else if (groundLayer == (groundLayer | (1 << collision.gameObject.layer)))
+        {
+            AudioSource.PlayClipAtPoint(hitSound, transform.position);
+            if (type != ProjectileType.sticking)
+                Destroy();
+            StickProjectile(collision.transform);
         }
     }
     public void StickProjectile(Transform obj)
     {
         rb.velocity = Vector2.zero;
-        transform.parent = obj;
+        transform.SetParent(obj);
         useGrav = false;
         this.enabled = false;
+        rb.simulated = false;
     }
     public void Destroy()
     {
         if (destroyParticle != null)
         {
             var obj = Instantiate<ParticleSystem>(destroyParticle, transform.position, transform.rotation, null);
-            Debug.Log(obj);
             obj.gameObject.SetActive(true);
         }
         Destroy(gameObject);

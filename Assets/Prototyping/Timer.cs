@@ -78,6 +78,15 @@ namespace ZenUtil
         private bool madeHook = false;
         private TimerMonoHook hook;
 
+        public Timer(float length)
+        {
+            timerLength = length;
+        }
+        public Timer(float length, Action timeEndAction)
+        {
+            timerLength = length;
+            onTimeEnd = timeEndAction;
+        }
         public void AttachHookToObj(GameObject obj)
         {
             madeHook = true;

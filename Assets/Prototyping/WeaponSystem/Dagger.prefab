@@ -49,9 +49,13 @@ MonoBehaviour:
   anim: {fileID: 0}
   audioSource: {fileID: 4817752965712511543}
   controller: {fileID: 9100000, guid: d150753fdf5cb6a4dafaf3dd1e7fe5c8, type: 2}
+  swapAbilityCooldown:
+    timerLength: 4
+    fixedTime: 0
+    testing: 0
   auto: 0
   damage: 5
-  speed: 15
+  speed: 20
   accuracyAngle: 5
   spawnPos: {x: 0, y: 0.3, z: 0}
   RPM: 180

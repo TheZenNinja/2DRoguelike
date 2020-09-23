@@ -31,9 +31,9 @@ public class CursorControl : MonoBehaviour
             //playerHandDir.localEulerAngles =  Vector3.zero;
             playerHandDir.localEulerAngles = PlayerControl.instance.isFlipped ? Vector3.forward * 180 : Vector3.zero;
     }
-    public void SetLookAtCursor(bool value)
+    public static void SetLookAtCursor(bool value)
     {
-        lookAtCursor = value;
+        instance.lookAtCursor = value;
     }
 
     public static Vector2 GetMouseDir(Vector3 pos)

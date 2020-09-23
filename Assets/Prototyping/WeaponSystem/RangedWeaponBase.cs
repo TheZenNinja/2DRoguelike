@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
 using ZenUtil;
 
@@ -49,6 +50,18 @@ namespace WeaponSystem
         {
             return UnityEngine.Random.Range(-accuracyAngle / 2, accuracyAngle / 2);
         }
+        public virtual List<GameObject> SpawnProjectileSpread(Vector3 pos, float spreadAngle, int count)
+        {
+            List<GameObject> projs = new List<GameObject>();
+            float angleSubdiv = spreadAngle / count;
+            int offset = count % 2 == 0 ? count/2 : (count-1)/2 ;
+            
+            for (int i = -offset; i < count-offset; i++)
+            {
+                projs.Add(SpawnProjectile(pos, GetHandAngle() + angleSubdiv * i));
+            }
+            return projs;
+        }
         public virtual GameObject SpawnProjectile(Vector3 pos, float angle)
         {
             GameObject g = Instantiate(projectilePref, GetBarrelPos(), Quaternion.identity);
@@ -71,12 +84,11 @@ namespace WeaponSystem
         }
 
         public override string GetUIInfo() => throw new System.NotImplementedException("Override the GetUIInfo method");
-
-        public override void Equip(Animator anim)
+        public override void Equip(Animator anim, bool suppressSwapEvent = false)
         {
-            base.Equip(anim);
             gameObject.SetActive(true);
-        }
+            base.Equip(anim, suppressSwapEvent);
+    }
         public override void Unequip()
         {
             gameObject.SetActive(false);

@@ -88,13 +88,15 @@ MonoBehaviour:
   type: 0
   targetLayer:
     serializedVersion: 2
-    m_Bits: 1537
+    m_Bits: 513
   groundLayer:
     serializedVersion: 2
     m_Bits: 1024
   useGrav: 0
   gravity: 0
   hitSound: {fileID: 8300000, guid: 938a10325abb23c43be0ade96af36c2f, type: 3}
+  hitParticle: {fileID: 0}
+  destroyParticle: {fileID: 0}
 --- !u!1 &5870128611991567246
 GameObject:
   m_ObjectHideFlags: 0

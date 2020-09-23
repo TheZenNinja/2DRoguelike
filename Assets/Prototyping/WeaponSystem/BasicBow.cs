@@ -33,9 +33,9 @@ namespace WeaponSystem
 
             return g;
         }
-        public override void Equip(Animator anim)
+        public override void Equip(Animator anim, bool suppressSwapEvent = false)
         {
-            base.Equip(anim);
+            base.Equip(anim, suppressSwapEvent);
         }
         public override void Unequip()
         {
@@ -44,6 +44,10 @@ namespace WeaponSystem
         public override string GetUIInfo()
         {
             return (fireRate.percent).ToString();
+        }
+        public override void SwapAbility()
+        {
+            SpawnProjectileSpread(GetBarrelPos(), 60, 5);
         }
         protected float Remap(float min, float max, float percent)
         {

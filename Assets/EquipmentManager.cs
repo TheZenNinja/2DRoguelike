@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using WeaponSystem;
+using ZenUtil;
 
 public class EquipmentManager : MonoBehaviour
 {
@@ -19,31 +20,46 @@ public class EquipmentManager : MonoBehaviour
     public Animator anim;
     public Transform weaponRoot;
 
+    public Timer swapCooldown = new Timer(1);
     void Start()
     {
+        swapCooldown.AttachHookToObj(gameObject);
+
         for (int i = 0; i < weaponItems.Length; i++)
         {
             var e = Instantiate(weaponItems[i].prefab, weaponRoot).GetComponent<WeaponBase>();
             Debug.Log(e);
             weaponObjs[i] = e;
         }
-        SwapWeapon(0);
+
+        weaponIndex = 0;
+        for (int i = 0; i < weaponObjs.Length; i++)
+        {
+            if (i == 0)
+                weaponObjs[i].Equip(anim, true);
+            else
+                weaponObjs[i].Unequip();
+        }
+        ui.SetWeapon(currentWeapon);
     }
 
     void Update()
     {
-        if (Input.GetKeyDown(KeyCode.Alpha1))
-            SwapWeapon(0);
-        if (Input.GetKeyDown(KeyCode.Alpha2))
-            SwapWeapon(1);
-        if (Input.GetKeyDown(KeyCode.Alpha3))
-            SwapWeapon(2);
-
-
         currentWeapon.HandleInput();
+
+        if (swapCooldown.finished)
+        {
+            if (Input.GetKeyDown(KeyCode.Alpha1))
+                SwapWeapon(0);
+            if (Input.GetKeyDown(KeyCode.Alpha2))
+                SwapWeapon(1);
+            if (Input.GetKeyDown(KeyCode.Alpha3))
+                SwapWeapon(2);
+        }
     }
     public void SwapWeapon(int index)
     {
+        swapCooldown.Start();
         weaponIndex = index;
         for (int i = 0; i < weaponObjs.Length; i++)
         {
