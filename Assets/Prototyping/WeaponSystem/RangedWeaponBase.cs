@@ -84,15 +84,10 @@ namespace WeaponSystem
         }
 
         public override string GetUIInfo() => throw new System.NotImplementedException("Override the GetUIInfo method");
-        public override void Equip(Animator anim, bool suppressSwapEvent = false)
+        public override void Equip(Transform root, Animator anim, bool suppressSwapEvent = false)
         {
-            gameObject.SetActive(true);
-            base.Equip(anim, suppressSwapEvent);
+            base.Equip(root, anim, suppressSwapEvent);
     }
-        public override void Unequip()
-        {
-            gameObject.SetActive(false);
-        }
         protected virtual void OnDestroy()
         {
             fireRate.DestroyHook();

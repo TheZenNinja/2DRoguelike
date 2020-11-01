@@ -105,14 +105,14 @@ namespace WeaponSystem
             }
             clipAmmo.SetToMax();
         }
-        public override void Equip(Animator anim, bool suppressSwapEvent = false)
+        public override void Equip(Transform root, Animator anim, bool suppressSwapEvent = false)
         {
-            base.Equip(anim, suppressSwapEvent);
+            base.Equip(root, anim, suppressSwapEvent);
             reloading = false;
         }
-        public override void Unequip()
+        public override void Unequip(Transform root)
         {
-            base.Unequip();
+            base.Unequip(root);
             reloading = false;
         }
     }

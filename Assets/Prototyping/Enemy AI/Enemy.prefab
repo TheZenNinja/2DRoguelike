@@ -123,7 +123,6 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 579330781921269337}
-  - component: {fileID: 579330781921269333}
   - component: {fileID: 579330781921269334}
   - component: {fileID: 7993728918963407127}
   - component: {fileID: 8454205759957890670}
@@ -150,21 +149,6 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &579330781921269333
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 579330781921269335}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 9099b90935ae1f9419492e6c22c2e915, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  maxHealth: 10
-  currentHealth: 0
-  statusEffects: []
 --- !u!114 &579330781921269334
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -177,7 +161,19 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 78c46767cc8ca7040880588ae3c777a9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  moveState: 0
+  stunResist: 0
+  stunned: 0
+  maxHealth: 10
+  currentHealth: 0
+  statusEffects: []
+  velocity: {x: 0, y: 0}
+  hitStunTimer:
+    timerLength: 0.3
+    fixedTime: 0
+    testing: 0
+  hitstunForce: 3
+  hitstunGrav: 15
+  moveState: 2
   lookDir: 1
   mesh: {fileID: 2467534348462388886}
   playerLayer:
@@ -194,8 +190,16 @@ MonoBehaviour:
   edgeDetect: {fileID: 1329663934}
   isTurning: 0
   turnSpeed: 1
+  turnCooldown:
+    timerLength: 1
+    fixedTime: 0
+    testing: 0
   walkSpeed: 6
-  velocity: {x: 0, y: 0}
+  drag: 10
+  lineOfSight:
+    radius: 10
+    angle: 50
+  loseTargetDist: 12
 --- !u!50 &7993728918963407127
 Rigidbody2D:
   serializedVersion: 4
@@ -372,7 +376,7 @@ MonoBehaviour:
   - {x: 0.5, y: -0.675, z: 0}
   m_ShapePathHash: 1334863053
   m_Mesh: {fileID: 0}
-  m_InstanceId: -507804
+  m_InstanceId: -59830
 --- !u!1 &5541833831162877166
 GameObject:
   m_ObjectHideFlags: 0

@@ -1,51 +1,27 @@
-﻿using System.Collections;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
 using WeaponSystem;
+using Pathfinding;
+using ZenUtil;
 
 public class EquipmentUI : MonoBehaviour
 {
-    public GameObject gunUI;
-    public TextMeshProUGUI ammoTxt;
-    public GameObject bowUI;
-    public Slider bowCharge;
-    public Image bowChargeSprite;
+    public TextMeshProUGUI infoTxt;
     WeaponBase currentWeapon;
 
+    public List<Image> cooldownSprites;
     public void SetWeapon(WeaponBase weapon) => currentWeapon = weapon;
     public void Update()
     {
         if (currentWeapon != null)
-            ammoTxt.text = currentWeapon.GetUIInfo();
+            infoTxt.text = currentWeapon.GetUIInfo();
         else
-            ammoTxt.text = "";
+            infoTxt.text = "";
     }
-    /*public void UpdateUI(EquipmentUIData data)
+    public void UpdateCooldown(int index, Timer timer)
     {
-        switch (data.type)
-        {
-            default:
-            case EquipmentType.gun:
-                gunUI.SetActive(true);
-                bowUI.SetActive(false);
-            ammoTxt.text = data.currentAmmo + "/" + data.reserveAmmo;
-                break;
-            case EquipmentType.bow:
-                gunUI.SetActive(false);
-                bowUI.SetActive(true);
-                bowCharge.value = data.chargePercent;
-                bowChargeSprite.color = data.overDrawn ? Color.red : Color.white;
-                break;
-            case EquipmentType.thrown:
-                break;
-        }
-    }*/
-}
-public enum EquipmentType
-{
-    gun,
-    bow,
-    thrown,
+        cooldownSprites[index].fillAmount = timer.finished? 0 : 1 - timer.percent;
+    }
 }

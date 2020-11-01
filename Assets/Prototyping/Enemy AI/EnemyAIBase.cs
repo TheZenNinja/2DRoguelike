@@ -2,9 +2,10 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.PlayerLoop;
+using WeaponSystem;
 using ZenUtil;
 
-public class EnemyAIBase : MonoBehaviour
+public class EnemyAIBase : Entity
 {
     public enum MoveState
     { 
@@ -12,6 +13,10 @@ public class EnemyAIBase : MonoBehaviour
         run,
         stand,
     }
+
+    public Timer hitStunTimer = new Timer(0.75f);
+    public float hitstunForce = 3;
+    public float hitstunGrav = 10;
 
     public MoveState moveState;
     public int lookDir = 1;
@@ -33,15 +38,15 @@ public class EnemyAIBase : MonoBehaviour
 
 
     public float walkSpeed = 6;
-    public Vector2 velocity;
-    
+    public float drag = 10;
+
     public FOV lineOfSight;
     public float loseTargetDist = 12;
-    Rigidbody2D rb;
-    public void Start()
+    public override void Start()
     {
+        base.Start();
         turnCooldown.AttachHookToObj(gameObject);
-        rb = GetComponent<Rigidbody2D>();
+        hitStunTimer.AttachHookToObj(gameObject);
     }
     
     public void Update()
@@ -55,7 +60,11 @@ public class EnemyAIBase : MonoBehaviour
 
         if (grounded)
         {
-            switch (moveState)
+            if (velocity.y < -0.1f)
+                velocity.y = -0.1f;
+            velocity.x = Mathf.Lerp(velocity.x, 0, drag * Time.deltaTime);
+
+            /*switch (moveState)
             {
                 case MoveState.walk:
                     velocity.x = walkSpeed * lookDir;
@@ -66,25 +75,34 @@ public class EnemyAIBase : MonoBehaviour
                 case MoveState.stand:
                     velocity.x = 0;
                     break;
-            }
-
-
-            if (velocity.y < -0.1f)
-                velocity.y = -0.1f;
-
+            }*/
         }
         else
         {
             if (useGrav)
             {
-                velocity.y -= gravity * Time.deltaTime;
+                if (hitStunTimer.finished)
+                    velocity.y -= gravity * Time.deltaTime;
+                else if (velocity.y > 0)
+                    velocity.y -= hitstunGrav * Time.deltaTime;
             }
         }
 
         rb.velocity = velocity;
     }
-    public void FixedUpdate()
+    public override DamageEvent Damage(int dmg = 1)
     {
+        DamageEvent e =base.Damage(dmg);
+        if (!grounded)
+        {
+            velocity.y = hitstunForce;
+            hitStunTimer.Start();
+        }
+        return e;
+    }
+    public override void FixedUpdate()
+    {
+        base.FixedUpdate();
         mesh.localScale = new Vector3(lookDir, 1, 1);
     }
     public void Turn()

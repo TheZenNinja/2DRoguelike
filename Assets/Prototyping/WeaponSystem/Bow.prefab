@@ -47,6 +47,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 249ceae132879cc42ba0af1f9cd96be2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  holsterPos: {x: -0.1, y: 0.15, z: 5}
+  holsterRot: {x: 0, y: 0, z: -90}
   anim: {fileID: 0}
   audioSource: {fileID: 4817752965712511543}
   controller: {fileID: 9100000, guid: 519fcfa406d843f47a60442f54b45559, type: 2}

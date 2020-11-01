@@ -12,7 +12,9 @@ public class EquipmentManager : MonoBehaviour
     public PrototypeWeaponItem[] weaponItems = new PrototypeWeaponItem[3];
     public int weaponIndex;
     public WeaponBase[] weaponObjs = new WeaponBase[3];
-    private WeaponBase currentWeapon => weaponObjs[weaponIndex];
+    public WeaponBase currentWeapon => weaponObjs[weaponIndex];
+
+    public Transform[] holsterPos;
 
     public Transform playerHands;
     public PlayerControl playerControl;
@@ -32,14 +34,7 @@ public class EquipmentManager : MonoBehaviour
             weaponObjs[i] = e;
         }
 
-        weaponIndex = 0;
-        for (int i = 0; i < weaponObjs.Length; i++)
-        {
-            if (i == 0)
-                weaponObjs[i].Equip(anim, true);
-            else
-                weaponObjs[i].Unequip();
-        }
+        SwapWeapon(0, true);
         ui.SetWeapon(currentWeapon);
     }
 
@@ -56,17 +51,25 @@ public class EquipmentManager : MonoBehaviour
             if (Input.GetKeyDown(KeyCode.Alpha3))
                 SwapWeapon(2);
         }
+        for (int i = 0; i < weaponItems.Length; i++)
+        {
+            ui.UpdateCooldown(i, weaponObjs[i].swapAbilityCooldown);
+        }
     }
-    public void SwapWeapon(int index)
+    public void SwapWeapon(int index, bool setup = false)
     {
         swapCooldown.Start();
         weaponIndex = index;
+        int holsterIndex = 0;
         for (int i = 0; i < weaponObjs.Length; i++)
         {
             if (i == index)
-                weaponObjs[i].Equip(anim);
+                weaponObjs[i].Equip(weaponRoot, anim, setup);
             else
-                weaponObjs[i].Unequip();
+            {
+                weaponObjs[i].Unequip(holsterPos[holsterIndex]);
+                holsterIndex++;
+            }
         }
         ui.SetWeapon(currentWeapon);
     }

@@ -33,21 +33,22 @@ namespace WeaponSystem
 
             return g;
         }
-        public override void Equip(Animator anim, bool suppressSwapEvent = false)
+        public override void Equip(Transform root, Animator anim, bool suppressSwapEvent = false)
         {
-            base.Equip(anim, suppressSwapEvent);
+            base.Equip(root, anim, suppressSwapEvent);
         }
-        public override void Unequip()
+        public override void Unequip(Transform root)
         {
-            base.Unequip();
+            base.Unequip(root);
         }
         public override string GetUIInfo()
         {
-            return (fireRate.percent).ToString();
+            return ((1-fireRate.percent)* 100).ToString("N0") + "%";
         }
         public override void SwapAbility()
         {
             SpawnProjectileSpread(GetBarrelPos(), 60, 5);
+            audioSource.Play();
         }
         protected float Remap(float min, float max, float percent)
         {
