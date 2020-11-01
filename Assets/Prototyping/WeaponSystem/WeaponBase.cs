@@ -22,7 +22,7 @@ namespace WeaponSystem
         public abstract void HandleInput();
         public abstract string GetUIInfo();
 
-        public virtual void Equip(Transform root, Animator anim, bool suppressSwapEvent = false)
+        public virtual void Equip(Transform root, Animator anim, bool swapEvent = false)
         {
             transform.SetParent(root);
             ResetTransforms();
@@ -30,11 +30,10 @@ namespace WeaponSystem
             this.anim = anim;
             anim.runtimeAnimatorController = controller;
 
-            if (!suppressSwapEvent)
-            if (swapAbilityCooldown.finished)
+            if (swapEvent && swapAbilityCooldown.finished)
             {
                 SwapAbility();
-                swapAbilityCooldown.Start();
+                swapAbilityCooldown.Restart();
             }
 
         }

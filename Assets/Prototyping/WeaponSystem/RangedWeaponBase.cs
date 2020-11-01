@@ -41,7 +41,10 @@ namespace WeaponSystem
                 if (Input.GetKeyDown(KeyCode.Mouse0) || (Input.GetKey(KeyCode.Mouse0) && auto))
                     Shoot();
         }
-        public abstract void Shoot();
+        public virtual void Shoot()
+        { 
+            PlayerControl.instance.AirStall();
+        }
         public float GetHandAngle()
         {
             return CursorControl.instance.GetAngleFromHand();
@@ -72,10 +75,7 @@ namespace WeaponSystem
             return g;
         }
 
-        public Vector3 GetBarrelPos()
-        {
-            return transform.position + transform.TransformVector(spawnPos);
-        }
+        public Vector3 GetBarrelPos() => transform.position + transform.TransformVector(spawnPos);
 
         protected virtual void OnDrawGizmosSelected()
         {
@@ -84,10 +84,7 @@ namespace WeaponSystem
         }
 
         public override string GetUIInfo() => throw new System.NotImplementedException("Override the GetUIInfo method");
-        public override void Equip(Transform root, Animator anim, bool suppressSwapEvent = false)
-        {
-            base.Equip(root, anim, suppressSwapEvent);
-    }
+
         protected virtual void OnDestroy()
         {
             fireRate.DestroyHook();

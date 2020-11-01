@@ -45,6 +45,7 @@ namespace WeaponSystem
         }
         public override void Shoot()
         {
+            base.Shoot();
             audioSource.Play();
             fireRate.Restart();
             anim.SetTrigger("Throw");
@@ -105,9 +106,9 @@ namespace WeaponSystem
             }
             clipAmmo.SetToMax();
         }
-        public override void Equip(Transform root, Animator anim, bool suppressSwapEvent = false)
+        public virtual void Equip(Transform root, Animator anim, bool swapEvent = false)
         {
-            base.Equip(root, anim, suppressSwapEvent);
+            base.Equip(root, anim, swapEvent);
             reloading = false;
         }
         public override void Unequip(Transform root)

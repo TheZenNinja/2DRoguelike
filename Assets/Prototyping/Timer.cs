@@ -93,15 +93,14 @@ namespace ZenUtil
             hook = TimerMonoHook.Create(Update, obj);
         }
 
-        public void Start()
+        public void Restart()
         {
             if (!madeHook)
                 CreateHook();
+
             testing = true;
             currentTime = timerLength;
         }
-        public void Restart() => Start();
-
         public void Stop()
         {
             currentTime = 0;

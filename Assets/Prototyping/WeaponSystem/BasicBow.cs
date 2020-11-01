@@ -12,11 +12,12 @@ namespace WeaponSystem
                 if (fireRate.finished)
                     Shoot();
                 else if (!fireRate.testing)
-                    fireRate.Start();
+                    fireRate.Restart();
             }
         }
         public override void Shoot()
         {
+            base.Shoot();
             audioSource.Play();
             fireRate.Restart();
 

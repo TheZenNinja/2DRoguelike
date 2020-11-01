@@ -22,11 +22,8 @@ public class EquipmentManager : MonoBehaviour
     public Animator anim;
     public Transform weaponRoot;
 
-    public Timer swapCooldown = new Timer(1);
     void Start()
     {
-        swapCooldown.AttachHookToObj(gameObject);
-
         for (int i = 0; i < weaponItems.Length; i++)
         {
             var e = Instantiate(weaponItems[i].prefab, weaponRoot).GetComponent<WeaponBase>();
@@ -34,7 +31,7 @@ public class EquipmentManager : MonoBehaviour
             weaponObjs[i] = e;
         }
 
-        SwapWeapon(0, true);
+        SwapWeapon(0, false);
         ui.SetWeapon(currentWeapon);
     }
 
@@ -42,29 +39,33 @@ public class EquipmentManager : MonoBehaviour
     {
         currentWeapon.HandleInput();
 
-        if (swapCooldown.finished)
-        {
-            if (Input.GetKeyDown(KeyCode.Alpha1))
-                SwapWeapon(0);
-            if (Input.GetKeyDown(KeyCode.Alpha2))
-                SwapWeapon(1);
-            if (Input.GetKeyDown(KeyCode.Alpha3))
-                SwapWeapon(2);
-        }
+        bool trySwapAbility = Input.GetKey(KeyCode.LeftAlt);
+
+        int swapIndex = -1;
+
+        if (Input.GetKeyDown(KeyCode.Alpha1))
+            swapIndex = 0;
+        else if (Input.GetKeyDown(KeyCode.Alpha2))
+            swapIndex = 1;
+        else if (Input.GetKeyDown(KeyCode.Alpha3))
+            swapIndex = 2;
+
+        if (swapIndex >= 0 && swapIndex != weaponIndex)
+            SwapWeapon(swapIndex, trySwapAbility);
+
+        
         for (int i = 0; i < weaponItems.Length; i++)
-        {
             ui.UpdateCooldown(i, weaponObjs[i].swapAbilityCooldown);
-        }
+
     }
-    public void SwapWeapon(int index, bool setup = false)
+    public void SwapWeapon(int index, bool swapAbility = false)
     {
-        swapCooldown.Start();
         weaponIndex = index;
         int holsterIndex = 0;
         for (int i = 0; i < weaponObjs.Length; i++)
         {
             if (i == index)
-                weaponObjs[i].Equip(weaponRoot, anim, setup);
+                weaponObjs[i].Equip(weaponRoot, anim, swapAbility);
             else
             {
                 weaponObjs[i].Unequip(holsterPos[holsterIndex]);

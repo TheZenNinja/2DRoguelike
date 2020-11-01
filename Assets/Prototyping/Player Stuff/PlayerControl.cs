@@ -10,14 +10,15 @@ public class PlayerControl : MonoBehaviour
 
     public Vector2 inputDir;
     public float speed = 5;
-    public float sprintSpeed = 10;
     public float acceleration = 10;
     public bool sprinting;
     [Header("Jumping & Gravity")]
     public bool useGrav = true;
     public float gravity = 20;
-    public float fallMulti = 1.5f;
     public float jumpForce = 20;
+    public float fallMulti = 1.5f;
+    [Range(0,1)]
+    public float jumpReleaseMulti = 1;
     public Counter doubleJump = new Counter(1);
     public bool grounded;
     public bool dropThruPlatform;
@@ -27,8 +28,8 @@ public class PlayerControl : MonoBehaviour
     public Timer dropThru;
     public bool canJump;
     public Timer cyoteTime;
+    public Timer airStallTimer;
     [Header("Dashing")]
-    public TimedInput dashInput;
     public float dashDistance = 5;
     public bool canDash;
     public float dashDuration = 0.5f;
@@ -42,7 +43,6 @@ public class PlayerControl : MonoBehaviour
     public bool isFlipped;
     [SerializeField] Collider2D footCol;
 
-    float xVelSmoothing = 0;
     Vector2 moveVel;
     Vector2 additionalVel;
     Vector2 dashVel;
@@ -51,7 +51,7 @@ public class PlayerControl : MonoBehaviour
     void Start()
     {
         canDash = true;
-        dashInput.SetupTapOnly(TryDash);
+        airStallTimer.AttachHookToObj(gameObject);
         dashCooldown.onTimeEnd = () => canDash = true;
         cyoteTime.onTimeEnd = () => canJump = false;
         dropThru.onTimeEnd = () => canDropThruRelease = true;
@@ -66,11 +66,16 @@ public class PlayerControl : MonoBehaviour
     public void HandleInput()
     {
         isFlipped = transform.position.x > Camera.main.ScreenToWorldPoint(Input.mousePosition).x;
-        model.localScale = isFlipped ? new Vector3(-1,1,1) : new Vector3(1, 1, 1);
-        handAnim.localScale = isFlipped ? new Vector3(1, -1, 1) : new Vector3(1, 1, 1);
+        transform.localScale = isFlipped ? new Vector3(-1,1,1) : new Vector3(1, 1, 1);
+        //model.localScale = isFlipped ? new Vector3(-1,1,1) : new Vector3(1, 1, 1);
+        //handAnim.localScale = isFlipped ? new Vector3(1, -1, 1) : new Vector3(1, 1, 1);
 
         inputDir = new Vector2(Input.GetAxisRaw("Horizontal"), Input.GetAxisRaw("Vertical"));
         sprinting = Input.GetKey(KeyCode.LeftShift);
+
+        if (Input.GetKeyDown(KeyCode.LeftShift) && canDash)
+            StartCoroutine(Dash());
+
         //platform drop
         if (Input.GetKey(KeyCode.Space) && Input.GetKey(KeyCode.S))
         {
@@ -79,7 +84,7 @@ public class PlayerControl : MonoBehaviour
                 Platform.enableDropThru?.Invoke();
                 dropThruPlatform = true;
                 canDropThruRelease = false;
-                dropThru.Start();
+                dropThru.Restart();
             }
         }
         else
@@ -105,8 +110,11 @@ public class PlayerControl : MonoBehaviour
         else
             grounded = footCol.IsTouchingLayers(groundLayer - platformLayer);
 
-        float spd = sprinting ? inputDir.x * sprintSpeed : inputDir.x * speed;
-        moveVel.x = Mathf.Lerp(moveVel.x, inputDir.x * speed, Time.deltaTime * acceleration);
+        float spd = speed;
+        if (!airStallTimer.finished)
+            spd *= 0.25f;
+
+        moveVel.x = Mathf.Lerp(moveVel.x, inputDir.x * spd, Time.deltaTime * acceleration);
 
         if (grounded)
         {
@@ -119,12 +127,19 @@ public class PlayerControl : MonoBehaviour
         else
         {
             if (canJump && !cyoteTime.testing)
-                cyoteTime.Start();
+                cyoteTime.Restart();
 
-            if (useGrav)
+            if (!airStallTimer.finished)
+                moveVel.y = 0;
+            else if (useGrav)
             {
                 if (moveVel.y > 0)
+                {
                     moveVel.y -= gravity * Time.deltaTime;
+
+                    if (Input.GetKeyUp(KeyCode.Space))
+                        moveVel.y *= jumpReleaseMulti;
+                }
                 else
                     moveVel.y -= gravity * fallMulti * Time.deltaTime;
             }
@@ -132,6 +147,15 @@ public class PlayerControl : MonoBehaviour
 
         rb.velocity = moveVel + dashVel + additionalVel;
     }
+
+    public void AirStall(bool ignoreIfGoingUp = false)
+    {
+        if (grounded) return;
+
+        if (!ignoreIfGoingUp && moveVel.y < 0)
+            airStallTimer.Restart();
+    }
+
     private void Jump(bool isDoubleJump)
     {
         if (isDoubleJump)
@@ -141,11 +165,6 @@ public class PlayerControl : MonoBehaviour
 
         canJump = false;
         moveVel.y = jumpForce;
-    }
-    public void TryDash()
-    {
-        if (canDash)
-            StartCoroutine(Dash());
     }
     private IEnumerator Dash()
     {

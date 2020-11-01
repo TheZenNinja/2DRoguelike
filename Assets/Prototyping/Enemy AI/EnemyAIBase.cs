@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using Microsoft.Win32.SafeHandles;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.PlayerLoop;
@@ -14,7 +15,6 @@ public class EnemyAIBase : Entity
         stand,
     }
 
-    public Timer hitStunTimer = new Timer(0.75f);
     public float hitstunForce = 3;
     public float hitstunGrav = 10;
 
@@ -26,8 +26,6 @@ public class EnemyAIBase : Entity
     public LayerMask terrainLayer;
     public Collider2D footCol;
     public bool useGrav;
-    public bool grounded;
-    public float gravity = 20;
 
     public Collider2D wallDetect;
     public Collider2D edgeDetect;
@@ -90,19 +88,10 @@ public class EnemyAIBase : Entity
 
         rb.velocity = velocity;
     }
-    public override DamageEvent Damage(int dmg = 1)
-    {
-        DamageEvent e =base.Damage(dmg);
-        if (!grounded)
-        {
-            velocity.y = hitstunForce;
-            hitStunTimer.Start();
-        }
-        return e;
-    }
+
     public override void FixedUpdate()
     {
-        base.FixedUpdate();
+        FilterStatusEffects();
         mesh.localScale = new Vector3(lookDir, 1, 1);
     }
     public void Turn()
@@ -116,7 +105,7 @@ public class EnemyAIBase : Entity
             yield return new WaitForSeconds(turnSpeed);
             lookDir *= -1;
             moveState = MoveState.walk;
-            turnCooldown.Start();
+            turnCooldown.Restart();
             isTurning = false;
         }
     }

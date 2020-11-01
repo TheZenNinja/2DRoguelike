@@ -20,21 +20,21 @@ public class CursorControl : MonoBehaviour
     }
     public float GetAngleFromHand()
     {
+        //if bugs occur add 180 if the player is flipped
         return GetMouseAngle(playerHandDir.position);
     }
 
     public void Update()
     {
+        float angle = PlayerControl.instance.isFlipped ? GetAngleFromHand() + 180: GetAngleFromHand();
+
         if (lookAtCursor)
-            playerHandDir.eulerAngles = new Vector3(0,0, GetAngleFromHand());
+            playerHandDir.eulerAngles = new Vector3(0,0, angle);
         else
-            //playerHandDir.localEulerAngles =  Vector3.zero;
-            playerHandDir.localEulerAngles = PlayerControl.instance.isFlipped ? Vector3.forward * 180 : Vector3.zero;
+            playerHandDir.localEulerAngles =  Vector3.zero;
+            //playerHandDir.localEulerAngles = PlayerControl.instance.isFlipped ? Vector3.forward * 180 : Vector3.zero;
     }
-    public static void SetLookAtCursor(bool value)
-    {
-        instance.lookAtCursor = value;
-    }
+    public static void SetLookAtCursor(bool value) => instance.lookAtCursor = value;
 
     public static Vector2 GetMouseDir(Vector3 pos)
     {
