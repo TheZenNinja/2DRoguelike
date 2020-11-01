@@ -39,7 +39,7 @@ public class ThrownDagger : MonoBehaviour
             Entity e = collision.GetComponent<Entity>();
             if (e)
             {
-                e.Damage(initalDamage);
+                e.Hit(initalDamage);
                 stuckEntity = e;
             }
             rb.velocity = Vector3.zero;
@@ -48,10 +48,11 @@ public class ThrownDagger : MonoBehaviour
         }
 
     }
+    //change to apply damage on destroy
     public void Recall()
     {
         if (stuckEntity)
-            stuckEntity.Damage(recallDamage);
+            stuckEntity.Hit(recallDamage);
         Destroy(gameObject);
     }
 }

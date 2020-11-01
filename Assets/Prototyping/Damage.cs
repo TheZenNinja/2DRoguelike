@@ -27,6 +27,7 @@ public class Damage
     }
 
     public static implicit operator int(Damage d) => d.damage;
+    public static implicit operator Damage(int val) => new Damage(val);
     public static implicit operator Element(Damage d) => d.element;
     public static implicit operator DamageType(Damage d) => d.type;
 }

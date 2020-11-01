@@ -37,7 +37,7 @@ public class BulletScript : MonoBehaviour
         {
             Entity e = collision.GetComponent<Entity>();
             if (e)
-                e.Damage(damage);
+                e.Hit(damage);
             if (!piercing)
                 Destroy(gameObject);
         }

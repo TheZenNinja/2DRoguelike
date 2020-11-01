@@ -9,7 +9,6 @@ namespace WeaponSystem
         public enum HitboxType
         { 
             basic,
-            stun,
             knockback,
         }
 
@@ -41,11 +40,8 @@ namespace WeaponSystem
                     default:
                         //e.Hit();
                         break;
-                    case HitboxType.stun:
-                        e.HitWithStun();
-                        break;
                     case HitboxType.knockback:
-                        e.HitWithForce(damage, hitForce);
+                        e.Hit(damage, hitForce);
                         break;
                 }
         }

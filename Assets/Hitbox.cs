@@ -17,7 +17,7 @@ public class Hitbox : MonoBehaviour
 
         foreach (var e in GetEntitiesInHitbox())
         {
-            e.Damage(damage);
+            e.Hit(damage);
             Debug.Log(e.name);
         }
     }

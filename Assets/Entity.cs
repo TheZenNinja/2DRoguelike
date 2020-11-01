@@ -75,7 +75,6 @@ public class Entity : MonoBehaviour
     }
 
     #region On Hit Methods
-    public virtual DamageEvent Hit(int damage) => this.Hit(new Damage(damage));
     public virtual DamageEvent Hit(Damage damage)
     {
         if (currentHealth <= 0)

@@ -60,7 +60,7 @@ public class ProjectileScript : MonoBehaviour
         {
             Entity e = collision.GetComponent<Entity>();
             if (e)
-                e.Damage(damage);
+                e.Hit(damage);
 
 
             AudioSource.PlayClipAtPoint(hitSound, transform.position);

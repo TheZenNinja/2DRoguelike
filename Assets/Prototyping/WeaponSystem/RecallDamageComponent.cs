@@ -16,7 +16,7 @@ public class RecallDamageComponent : MonoBehaviour
 
         if (gameObject)
         {
-            e?.Damage(dmg);
+            e?.Hit(dmg);
             GetComponent<ProjectileScript>().Destroy();
         }
     }
