@@ -9,11 +9,11 @@ public class PlayerEvents : MonoBehaviour
 
     public UnityEvent onReload;
 
-    public UnityEvent<Entity> onHitEnemy;
+    public UnityEvent<StandardEntity> onHitEnemy;
 
-    public UnityEvent<Entity> onLaunchEnemy;
+    public UnityEvent<StandardEntity> onLaunchEnemy;
 
-    public UnityEvent<Entity> onKillEnemy;
+    public UnityEvent<StandardEntity> onKillEnemy;
 
     public UnityEvent<StatusType> onInflictStatus;
 }

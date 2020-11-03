@@ -11,23 +11,38 @@ namespace ZenUtil
         {
             if (obj == null)
             {
-                obj = new GameObject();
-                obj.name = "Timer Hook";
+                obj = new GameObject
+                {
+                    name = "Timer Hook"
+                };
             }
-            TimerMonoHook hook = obj.AddComponent<TimerMonoHook>();
-            hook.onUpdate = update;
+            TimerMonoHook hook;
+            if (obj.GetComponent<TimerMonoHook>())
+            {
+                hook = obj.GetComponent<TimerMonoHook>();
+                hook.onUpdate += update;
+            }
+            else
+            {
+                hook = obj.AddComponent<TimerMonoHook>();
+                hook.onUpdate = update;
+            }
             return hook;
         }
         public Action onUpdate;
 
         private void Update() => onUpdate?.Invoke();
 
-        public void Destroy()
+        public void Destroy(Action action)
         {
-            if (GetComponents<TimerMonoHook>().Length <= 1)
+            if (!gameObject || !this)
+                return;
+            if (onUpdate.GetInvocationList().Length <= 1)
                 Destroy(gameObject);
             else
-                Destroy(this);
+            {
+                onUpdate -= action;
+            }
         }
     }
     public class OneTimeTimer
@@ -62,7 +77,7 @@ namespace ZenUtil
             if (currentTime <= timerLength)
                 Complete();
         }
-        public void Complete() => hook.Destroy();
+        public void Complete() => hook.Destroy(onTimeEnd);
     }
     [Serializable]
     public class Timer
@@ -86,6 +101,10 @@ namespace ZenUtil
         {
             timerLength = length;
             onTimeEnd = timeEndAction;
+        }
+        ~Timer()
+        {
+            DestroyHook();
         }
         public void AttachHookToObj(GameObject obj)
         {
@@ -135,7 +154,9 @@ namespace ZenUtil
         {
             madeHook = false;
             if (hook)
-                hook.Destroy();
+            {
+                hook?.Destroy(onTimeEnd);
+            }
             hook = null;
         }
         public static implicit operator float(Timer t) => t.currentTime;

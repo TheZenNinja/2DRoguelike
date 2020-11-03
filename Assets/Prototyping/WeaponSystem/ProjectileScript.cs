@@ -58,7 +58,7 @@ public class ProjectileScript : MonoBehaviour
             //learn this
         if (targetLayer == (targetLayer | (1 << collision.gameObject.layer)))
         {
-            Entity e = collision.GetComponent<Entity>();
+            StandardEntity e = collision.GetComponent<StandardEntity>();
             if (e)
                 e.Hit(damage);
 

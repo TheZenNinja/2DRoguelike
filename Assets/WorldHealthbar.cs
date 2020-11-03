@@ -6,7 +6,7 @@ using ZenUtil;
 
 public class WorldHealthbar : MonoBehaviour
 {
-    public Entity entity;
+    public StandardEntity entity;
     public Timer hideTimer;
     public GameObject uiObj;
     public Slider hpBar;

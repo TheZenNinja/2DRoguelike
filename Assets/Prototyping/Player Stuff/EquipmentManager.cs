@@ -18,7 +18,6 @@ public class EquipmentManager : MonoBehaviour
 
     public Transform playerHands;
     public PlayerControl playerControl;
-    public EquipmentUI ui;
     public Animator anim;
     public Transform weaponRoot;
 
@@ -32,7 +31,6 @@ public class EquipmentManager : MonoBehaviour
         }
 
         SwapWeapon(0, false);
-        ui.SetWeapon(currentWeapon);
     }
 
     void Update()
@@ -55,7 +53,7 @@ public class EquipmentManager : MonoBehaviour
 
         
         for (int i = 0; i < weaponItems.Length; i++)
-            ui.UpdateCooldown(i, weaponObjs[i].swapAbilityCooldown);
+             PlayerUI.instance.UpdateCooldown(i, weaponObjs[i].swapAbilityCooldown);
 
     }
     public void SwapWeapon(int index, bool swapAbility = false)
@@ -72,6 +70,5 @@ public class EquipmentManager : MonoBehaviour
                 holsterIndex++;
             }
         }
-        ui.SetWeapon(currentWeapon);
     }
 }

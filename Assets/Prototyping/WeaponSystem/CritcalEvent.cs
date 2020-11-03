@@ -22,7 +22,7 @@ namespace WeaponSystem
         [SerializeField] EventRequirement requirement;
         [SerializeField] StatusType status;
 
-        public bool isCritical(Entity player, Entity enemy = null)
+        public bool isCritical(StandardEntity player, StandardEntity enemy = null)
         {
             if (whatEntity == WhatEntity.enemy)
             {

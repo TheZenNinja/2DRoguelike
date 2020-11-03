@@ -4,7 +4,7 @@ using UnityEngine;
 using Pathfinding;
 
 //convert to be more general
-public class NewEnemyAI : Entity
+public class NewEnemyAI : StandardEntity
 {
     public Transform target;
 
@@ -94,10 +94,10 @@ public class NewEnemyAI : Entity
     private void SearchEnemies()
     {
         //get entities
-        List<Entity> targets = fov.GetObjectsInView<Entity>(transform, transform.right, groundLayer);
+        List<StandardEntity> targets = fov.GetObjectsInView<StandardEntity>(transform, transform.right, groundLayer);
         //filter entities
-        if (targets.Contains(GetComponent<Entity>()))
-            targets.Remove(GetComponent<Entity>());
+        if (targets.Contains(GetComponent<StandardEntity>()))
+            targets.Remove(GetComponent<StandardEntity>());
         //select target
         if (targets.Count > 0)
             target = targets[0].transform;

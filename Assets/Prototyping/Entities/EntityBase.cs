@@ -5,23 +5,12 @@ using System.Collections.Generic;
 using ZenUtil;
 using WeaponSystem;
 
-public class Entity : MonoBehaviour
+public class EntityBase : MonoBehaviour
 {
-    //[Range(0,1)]
-    //[Tooltip("0 = no resist, 1 = cant be stunned")]
-    //public float stunResist = 0;
-    //public bool stunned;
-
     public int maxHealth = 10;
     public int currentHealth;
 
-    public Timer hitStunTimer = new Timer(0.75f);
-    public LayerMask groundLayer;
-    public bool grounded;
-    public float groundRayDistance;
-
-    public float gravity;
-    protected float currentGrav;
+    
 
     public float healthPercent { get { return (float)currentHealth / maxHealth; } }
 
@@ -37,32 +26,15 @@ public class Entity : MonoBehaviour
     {
         currentHealth = maxHealth;
         rb = GetComponent<Rigidbody2D>();
-        currentGrav = gravity;
-        hitStunTimer.AttachHookToObj(gameObject);
     }
 
     public virtual void FixedUpdate()
     {
         FilterStatusEffects();
-        DetectGround();
-        ApplyGravity();
     }
     protected void FilterStatusEffects()
-    { 
-        statusEffects.RemoveAll(x => x.duration >= 0);
-    }
-    protected void DetectGround() => grounded = Physics2D.Raycast(transform.position, -Vector2.up, groundRayDistance, groundLayer);
-    protected void ApplyGravity()
     {
-        if (grounded)
-        {
-            if (velocity.y < -0.1f)
-                velocity.y = -0.1f;
-        }
-        else
-        {
-            velocity.y -= gravity * Time.deltaTime;
-        }
+        statusEffects.RemoveAll(x => x.duration >= 0);
     }
 
     public void InflictStatus(StatusEffect effect)
@@ -74,7 +46,6 @@ public class Entity : MonoBehaviour
             statusEffects.Add(effect);
     }
 
-    #region On Hit Methods
     public virtual DamageEvent Hit(Damage damage)
     {
         if (currentHealth <= 0)
@@ -91,23 +62,6 @@ public class Entity : MonoBehaviour
 
         return new DamageEvent(this, damage, dead);
     }
-
-    public virtual DamageEvent Hit(Damage damage, Vector2 force)
-    {
-        velocity = force;
-        hitStunTimer.Restart();
-        return this.Hit(damage);
-    }
-    public virtual DamageEvent Hit(Damage damage, float airHitStunForce)
-    {
-        if (!grounded)
-        {
-            velocity.y = airHitStunForce;
-            hitStunTimer.Restart();
-        }
-        return this.Hit(damage);
-    }
-#endregion
 
     public bool InRangeMin(Vector3 position, float range) => Vector3.SqrMagnitude(transform.position - position) <= range;
     public bool InRangeMax(Vector3 position, float range) => Vector3.SqrMagnitude(transform.position - position) >= range;

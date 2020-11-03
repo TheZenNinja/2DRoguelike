@@ -32,7 +32,7 @@ namespace WeaponSystem
             if (targetLayer != (targetLayer | (1 << other.gameObject.layer)))
                 return;
 
-            Entity e = other.GetComponent<Entity>();
+            StandardEntity e = other.GetComponent<StandardEntity>();
             if (e)
                 switch (type)
                 {

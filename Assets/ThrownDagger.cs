@@ -5,7 +5,7 @@ using System;
 public class ThrownDagger : MonoBehaviour
 {
     public int initalDamage;
-    public Entity stuckEntity;
+    public StandardEntity stuckEntity;
     public int recallDamage;
 
     public LayerMask targetLayer;
@@ -36,7 +36,7 @@ public class ThrownDagger : MonoBehaviour
         //learn this
         if (targetLayer == (targetLayer | (1 << collision.gameObject.layer)))
         {
-            Entity e = collision.GetComponent<Entity>();
+            StandardEntity e = collision.GetComponent<StandardEntity>();
             if (e)
             {
                 e.Hit(initalDamage);

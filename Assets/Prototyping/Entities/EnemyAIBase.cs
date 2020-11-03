@@ -6,7 +6,7 @@ using UnityEngine.PlayerLoop;
 using WeaponSystem;
 using ZenUtil;
 
-public class EnemyAIBase : Entity
+public class EnemyAIBase : StandardEntity
 {
     public enum MoveState
     { 

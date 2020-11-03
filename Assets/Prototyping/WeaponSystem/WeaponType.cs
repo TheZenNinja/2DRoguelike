@@ -10,7 +10,9 @@ namespace WeaponSystem
     {
         gun,
         bow,
-        thrown,
+        daggers,
         sword,
+        spear,
+        scythe,
     }
 }

@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   data:
     name: 
-    type: 0
+    type: 1
     damage: 1
     crit: 1
     desc: 

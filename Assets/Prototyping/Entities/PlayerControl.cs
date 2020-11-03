@@ -1,9 +1,10 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using ZenUtil;
 
-public class PlayerControl : MonoBehaviour
+public class PlayerControl : EntityBase
 {
     public static PlayerControl instance;
     public PlayerControl() => instance = this;
@@ -25,8 +26,8 @@ public class PlayerControl : MonoBehaviour
     public bool canDropThruRelease;
     public LayerMask groundLayer;
     public LayerMask platformLayer;
-    public Timer dropThru;
     public bool canJump;
+    public Timer dropThru;
     public Timer cyoteTime;
     public Timer airStallTimer;
     [Header("Dashing")]
@@ -35,7 +36,7 @@ public class PlayerControl : MonoBehaviour
     public float dashDuration = 0.5f;
     public Timer dashCooldown;
 
-    public static event System.Action onDodge;
+    public static event Action onDodge;
 
     public Transform model;
     public Transform handAnim;
@@ -43,15 +44,17 @@ public class PlayerControl : MonoBehaviour
     public bool isFlipped;
     [SerializeField] Collider2D footCol;
 
-    Vector2 moveVel;
     Vector2 additionalVel;
     Vector2 dashVel;
-    Rigidbody2D rb;
 
-    void Start()
+    public override void Start()
     {
+        base.Start();
         canDash = true;
         airStallTimer.AttachHookToObj(gameObject);
+        dashCooldown.AttachHookToObj(gameObject);
+        cyoteTime.AttachHookToObj(gameObject);
+        dropThru.AttachHookToObj(gameObject);
         dashCooldown.onTimeEnd = () => canDash = true;
         cyoteTime.onTimeEnd = () => canJump = false;
         dropThru.onTimeEnd = () => canDropThruRelease = true;
@@ -114,12 +117,12 @@ public class PlayerControl : MonoBehaviour
         if (!airStallTimer.finished)
             spd *= 0.25f;
 
-        moveVel.x = Mathf.Lerp(moveVel.x, inputDir.x * spd, Time.deltaTime * acceleration);
+        velocity.x = Mathf.Lerp(velocity.x, inputDir.x * spd, Time.deltaTime * acceleration);
 
         if (grounded)
         {
-            if (moveVel.y < -0.1f)
-                moveVel.y = -0.1f;
+            if (velocity.y < -0.1f)
+                velocity.y = -0.1f;
             canJump = true;
             if (!doubleJump.atMax)
                 doubleJump.SetToMax();
@@ -129,30 +132,30 @@ public class PlayerControl : MonoBehaviour
             if (canJump && !cyoteTime.testing)
                 cyoteTime.Restart();
 
-            if (!airStallTimer.finished)
-                moveVel.y = 0;
+        if (!airStallTimer.finished)
+                    velocity.y = 0;
             else if (useGrav)
             {
-                if (moveVel.y > 0)
+                if (velocity.y > 0)
                 {
-                    moveVel.y -= gravity * Time.deltaTime;
+                    velocity.y -= gravity * Time.deltaTime;
 
                     if (Input.GetKeyUp(KeyCode.Space))
-                        moveVel.y *= jumpReleaseMulti;
+                        velocity.y *= jumpReleaseMulti;
                 }
                 else
-                    moveVel.y -= gravity * fallMulti * Time.deltaTime;
+                    velocity.y -= gravity * fallMulti * Time.deltaTime;
             }
         }
 
-        rb.velocity = moveVel + dashVel + additionalVel;
+        rb.velocity = velocity + dashVel + additionalVel;
     }
 
     public void AirStall(bool ignoreIfGoingUp = false)
     {
         if (grounded) return;
 
-        if (!ignoreIfGoingUp && moveVel.y < 0)
+        if (!ignoreIfGoingUp || (ignoreIfGoingUp && velocity.y <= 0) )
             airStallTimer.Restart();
     }
 
@@ -164,7 +167,7 @@ public class PlayerControl : MonoBehaviour
             doubleJump.SetToMax();
 
         canJump = false;
-        moveVel.y = jumpForce;
+        velocity.y = jumpForce;
     }
     private IEnumerator Dash()
     {
@@ -176,7 +179,7 @@ public class PlayerControl : MonoBehaviour
 
         if (spotDodge)
         {
-            moveVel.y = 0;
+            velocity.y = 0;
             useGrav = false;
 
             yield return new WaitForSeconds(0.5f);
@@ -186,7 +189,7 @@ public class PlayerControl : MonoBehaviour
         else
         {
             dashVel = new Vector2(inputDir.x, 0) * dashDistance / dashDuration;
-            moveVel.y = 0;
+            velocity.y = 0;
             useGrav = false;
 
             yield return new WaitForSeconds(dashDuration);
@@ -198,6 +201,6 @@ public class PlayerControl : MonoBehaviour
         useGrav = true;
     }
 
-    public void AddForce(Vector2 force) => moveVel += force;
-    public void AddForce(float force, Vector2 dir) => moveVel += force * dir;
+    public void AddForce(Vector2 force) => velocity += force;
+    public void AddForce(float force, Vector2 dir) => velocity += force * dir;
 }

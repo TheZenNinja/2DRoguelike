@@ -3,5 +3,5 @@ using System.Collections.Generic;
 using UnityEngine;
 public interface IDamagableObject
 {
-    void DamageObj(int dmg, Entity sender);
+    void DamageObj(int dmg, StandardEntity sender);
 }

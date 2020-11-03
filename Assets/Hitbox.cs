@@ -22,14 +22,14 @@ public class Hitbox : MonoBehaviour
         }
     }
 
-    public List<Entity> GetEntitiesInHitbox()
+    public List<StandardEntity> GetEntitiesInHitbox()
     {
         Collider2D[] cols = Physics2D.OverlapCircleAll(transform.position, range, mask);
-        List<Entity> entities = new List<Entity>();
+        List<StandardEntity> entities = new List<StandardEntity>();
 
         foreach (var c in cols)
         {
-            Entity e = c.GetComponentInParent<Entity>();
+            StandardEntity e = c.GetComponentInParent<StandardEntity>();
             if (e && !entities.Contains(e))
             {
                 Vector3 dirToTarget = (e.transform.position - transform.position).normalized;
