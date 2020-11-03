@@ -106,6 +106,7 @@ namespace ZenUtil
         {
             DestroyHook();
         }
+        public void AttachHookToObj(MonoBehaviour mono) => AttachHookToObj(mono.gameObject);
         public void AttachHookToObj(GameObject obj)
         {
             madeHook = true;
