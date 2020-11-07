@@ -8,6 +8,11 @@ public class SpriteAtlas : ScriptableObject
     public static SpriteAtlas instance;
     public SpriteAtlas() => instance = this;
 
+    public void Awake()
+    {
+        instance = this;
+    }
+
     public Sprite[] weaponTypeSprites;
 
     public static Sprite GetWeaponTypeSprite(WeaponType type)
