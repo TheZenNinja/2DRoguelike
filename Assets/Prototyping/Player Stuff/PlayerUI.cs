@@ -15,14 +15,14 @@ public class PlayerUI : MonoBehaviour
     EntityBase playerEntity;
     public Slider hpBar;
     [Header("Equipment")]
+    public GameObject weaponInfoBox;
     public TextMeshProUGUI weaponInfoTxt;
     public TextMeshProUGUI stanceNameTxt;
-    public List<HotbarSlotUI> hotbarSprites;
+    public HotbarSlotUI weaponSprite;
     // Start is called before the first frame update
     void Start()
     {
         playerEntity = PlayerControl.instance;
-        LoadWeaponSprites();
     }
     public void Update()
     {
@@ -34,25 +34,31 @@ public class PlayerUI : MonoBehaviour
     { 
         hpBar.value = playerEntity.healthPercent;
     }
-    private void LoadWeaponSprites()
-    {
-        for (int i = 0; i < 3; i++)
-        {
-            var type = EquipmentManager.instance.weaponItems[i].data.type;
-            hotbarSprites[i].sprite.sprite = SpriteAtlas.GetWeaponTypeSprite(type);
-        }
-    }
     private void UpdateEquipment()
-    { 
+    {
         stanceNameTxt.text = StanceManager.instance.currentStance;
 
-        if (EquipmentManager.instance.currentWeapon != null)
+        WeaponBase currentWep = EquipmentManager.instance.currentWeapon;
+
+        if (currentWep && currentWep.GetUIInfo() != "null")
+        {
+            weaponInfoBox.SetActive(true);
             weaponInfoTxt.text = EquipmentManager.instance.currentWeapon.GetUIInfo();
+        }
         else
+        {
+            weaponInfoBox.SetActive(false);
             weaponInfoTxt.text = "";
+        }
     }
 
-    public void UpdateCooldown(int index, Timer timer) => hotbarSprites[index].UpdateCooldown(timer);
+    public void UpdateWeapon(PrototypeWeaponItem item)
+    {
+        if (item == null)
+            return;
+
+        weaponSprite.sprite.sprite = SpriteAtlas.GetWeaponTypeSprite(item.type);
+    }
 
 
 }

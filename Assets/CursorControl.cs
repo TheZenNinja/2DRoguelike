@@ -45,5 +45,9 @@ public class CursorControl : MonoBehaviour
         Vector3 mousePos = GetMouseDir(pos);
         return Mathf.Atan2(mousePos.y, mousePos.x) * Mathf.Rad2Deg;
     }
+    private void OnDrawGizmos()
+    {
+        Gizmos.color = Color.green;
+    }
 
 }

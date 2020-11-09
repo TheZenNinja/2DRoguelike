@@ -5,10 +5,10 @@ using UnityEngine;
 public class RecallDamageComponent : MonoBehaviour
 {
     [SerializeField] int dmg;
-    [SerializeField] StandardEntity e;
+    [SerializeField] EntityBase e;
 
     public void SetupData(int dmg) => this.dmg = dmg;
-    public void SetEntity(StandardEntity entity) => e = entity;
+    public void SetEntity(EntityBase entity) => e = entity;
     public void RecallEvent()
     {
         if (!this)

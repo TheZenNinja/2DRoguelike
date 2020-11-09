@@ -19,7 +19,8 @@ namespace WeaponSystem
         public int RPM = 600;
         public Timer fireRate;
 
-        public ProjectileType projectileType;
+        public int maxPierceTargets = 0;
+        public bool stickInTarget = false;
         public GameObject projectilePref;
 
         public float reloadDuration = 1;
@@ -70,8 +71,6 @@ namespace WeaponSystem
             GameObject g = Instantiate(projectilePref, GetBarrelPos(), Quaternion.identity);
             ProjectileScript proj = g.GetComponent<ProjectileScript>();
 
-            proj.Setup(damage, speed, angle, projectileType);
-
             return g;
         }
 
@@ -83,11 +82,9 @@ namespace WeaponSystem
             Gizmos.DrawLine(GetBarrelPos(), GetBarrelPos() + transform.right);
         }
 
-        public override string GetUIInfo() => throw new System.NotImplementedException("Override the GetUIInfo method");
-
         protected virtual void OnDestroy()
         {
-            fireRate.DestroyHook();
+            //fireRate.DestroyHook();
         }
     }
 }

@@ -17,7 +17,12 @@ public class SpriteAtlas : ScriptableObject
 
     public static Sprite GetWeaponTypeSprite(WeaponType type)
     {
+        //if (!instance)
+        //    instance = Resources.Load <SpriteAtlas>("Sprite Atlas");
+
+#pragma warning disable IDE0066 // Doesnt work
         switch (type)
+#pragma warning restore IDE0066 // Convert switch statement to expression
         {
             case WeaponType.gun:
                 return instance.weaponTypeSprites[0];
@@ -25,8 +30,8 @@ public class SpriteAtlas : ScriptableObject
                 return instance.weaponTypeSprites[1];
             case WeaponType.daggers:
                 return instance.weaponTypeSprites[2];
-            default:
             case WeaponType.sword:
+            default:
                 return instance.weaponTypeSprites[3];
             case WeaponType.spear:
                 return instance.weaponTypeSprites[4];

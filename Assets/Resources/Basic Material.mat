@@ -7,7 +7,7 @@ Material:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: Player Mat
+  m_Name: Basic Material
   m_Shader: {fileID: -6465566751694194690, guid: 2457a3c58401ce6479b1827c4cd9fbe0,
     type: 3}
   m_ShaderKeywords: 
@@ -38,9 +38,7 @@ Material:
         m_Offset: {x: 0, y: 0}
     m_Floats:
     - _EnableExternalAlpha: 0
-    - _Glow: 0
     m_Colors:
-    - Color_8C9F814C: {r: 0.8, g: 0.8, b: 0.8, a: 1}
     - _Color: {r: 1, g: 1, b: 1, a: 1}
     - _Flip: {r: 1, g: 1, b: 1, a: 1}
     - _RendererColor: {r: 1, g: 1, b: 1, a: 1}

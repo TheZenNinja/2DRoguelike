@@ -1,4 +1,6 @@
-﻿using System.Collections;
+﻿using Assets.Prototyping.WeaponSystem;
+using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using WeaponSystem;
@@ -9,10 +11,12 @@ public class EquipmentManager : MonoBehaviour
     public static EquipmentManager instance;
     public EquipmentManager() => instance = this;
 
-    public PrototypeWeaponItem[] weaponItems = new PrototypeWeaponItem[3];
-    public int weaponIndex;
-    public WeaponBase[] weaponObjs = new WeaponBase[3];
-    public WeaponBase currentWeapon => weaponObjs[weaponIndex];
+    public PrototypeWeaponItem weaponItem;
+
+    
+
+    public WeaponBase weaponObj;
+    public WeaponBase currentWeapon => weaponObj;
 
     public Transform[] holsterPos;
 
@@ -23,52 +27,47 @@ public class EquipmentManager : MonoBehaviour
 
     void Start()
     {
-        for (int i = 0; i < weaponItems.Length; i++)
-        {
-            var e = Instantiate(weaponItems[i].prefab, weaponRoot).GetComponent<WeaponBase>();
-            Debug.Log(e);
-            weaponObjs[i] = e;
-        }
-
-        SwapWeapon(0, false);
+        EquipWeapon(weaponItem);
     }
-
+    public void EquipWeapon(PrototypeWeaponItem item)
+    {
+        if (!weaponItem)
+        {
+            Unequip();
+            return;
+        }
+        weaponItem = item;
+        weaponObj = weaponItem.Instantiate(weaponRoot);
+        weaponObj.Equip(weaponRoot, anim);
+    }
+    public void Unequip()
+    {
+        if (weaponObj)
+        {
+            Destroy(weaponObj.gameObject);
+            weaponObj = null;
+        }
+        weaponItem = null;
+    }
     void Update()
     {
-        currentWeapon.HandleInput();
+        if (currentWeapon)
+            currentWeapon.HandleInput();
 
-        bool trySwapAbility = Input.GetKey(KeyCode.LeftAlt);
-
-        int swapIndex = -1;
-
-        if (Input.GetKeyDown(KeyCode.Alpha1))
-            swapIndex = 0;
-        else if (Input.GetKeyDown(KeyCode.Alpha2))
-            swapIndex = 1;
-        else if (Input.GetKeyDown(KeyCode.Alpha3))
-            swapIndex = 2;
-
-        if (swapIndex >= 0 && swapIndex != weaponIndex)
-            SwapWeapon(swapIndex, trySwapAbility);
-
-        
-        for (int i = 0; i < weaponItems.Length; i++)
-             PlayerUI.instance.UpdateCooldown(i, weaponObjs[i].swapAbilityCooldown);
-
+        PlayerUI.instance.UpdateWeapon(weaponItem);
     }
-    public void SwapWeapon(int index, bool swapAbility = false)
+
+    public void ThrowItem()
     {
-        weaponIndex = index;
-        int holsterIndex = 0;
-        for (int i = 0; i < weaponObjs.Length; i++)
-        {
-            if (i == index)
-                weaponObjs[i].Equip(weaponRoot, anim, swapAbility);
-            else
-            {
-                weaponObjs[i].Unequip(holsterPos[holsterIndex]);
-                holsterIndex++;
-            }
-        }
+        if (weaponItem != null)
+            ThrownItem.Spawn(weaponItem, playerControl.transform.position, CursorControl.instance.GetDirFromHand() * 40);
+
+        Unequip();
+    }
+
+    public void DropItem(Vector3 position)
+    {
+        weaponItem.DropItem(position);
+        Unequip();
     }
 }

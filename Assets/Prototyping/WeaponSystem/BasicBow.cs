@@ -30,8 +30,6 @@ namespace WeaponSystem
             GameObject g = Instantiate(projectilePref, GetBarrelPos(), Quaternion.identity);
             ProjectileScript proj = g.GetComponent<ProjectileScript>();
 
-            proj.Setup(damage, speed, angle, projectileType);
-
             return g;
         }
         public override void Equip(Transform root, Animator anim, bool suppressSwapEvent = false)

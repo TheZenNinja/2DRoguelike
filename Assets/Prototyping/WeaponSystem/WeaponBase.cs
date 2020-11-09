@@ -20,7 +20,7 @@ namespace WeaponSystem
             swapAbilityCooldown.AttachHookToObj(gameObject);
         }
         public abstract void HandleInput();
-        public abstract string GetUIInfo();
+        public virtual string GetUIInfo() => "null";
 
         public virtual void Equip(Transform root, Animator anim, bool swapEvent = false)
         {

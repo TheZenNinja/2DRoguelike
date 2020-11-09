@@ -7,6 +7,7 @@ namespace WeaponSystem
 {
     public class BasicGun : RangedWeaponBase
     {
+        public Sprite projectileSprite;
         public int recallDmg;
         public Action onReloadAction;
         public Counter clipAmmo = new Counter(10);
@@ -48,15 +49,19 @@ namespace WeaponSystem
             base.Shoot();
             audioSource.Play();
             fireRate.Restart();
-            anim.SetTrigger("Throw");
+            //anim.SetTrigger("Throw");
 
-            float angle = GetHandAngle();
+            Vector2 dir = CursorControl.instance.GetDirFromHand();
             if (!clipAmmo.atMax)
-                angle += GetRandomSpread();
+                dir.RandomizeAngle(GetRandomSpread());
 
-            SpawnProjectile(GetBarrelPos(), angle);
+            SpawnProjectile(GetBarrelPos(), dir.normalized);
 
             clipAmmo--;
+        }
+        public GameObject SpawnProjectile(Vector2 pos, Vector2 dir)
+        {
+            return ProjectileScript.Spawn(pos, projectileSprite, speed * dir, rotationOffset: -90, glow: 3f).gameObject;
         }
         protected virtual IEnumerator Reload()
         {
@@ -106,7 +111,7 @@ namespace WeaponSystem
             }
             clipAmmo.SetToMax();
         }
-        public virtual void Equip(Transform root, Animator anim, bool swapEvent = false)
+        public override void Equip(Transform root, Animator anim, bool swapEvent = false)
         {
             base.Equip(root, anim, swapEvent);
             reloading = false;

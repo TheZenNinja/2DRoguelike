@@ -45,6 +45,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d8e95e6dd187b884aa1552e037ea1ade, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  holsterPos: {x: 0, y: 0, z: 0}
+  holsterRot: {x: 0, y: 0, z: 0}
+  events: []
   anim: {fileID: 0}
   audioSource: {fileID: 4817752965712511543}
   controller: {fileID: 9100000, guid: 519fcfa406d843f47a60442f54b45559, type: 2}
@@ -66,6 +69,7 @@ MonoBehaviour:
   projectilePref: {fileID: 1409489188428598799, guid: 86ce4c8689b97e44695424c0615b4568,
     type: 3}
   reloadDuration: 1
+  projectileSprite: {fileID: 21300000, guid: 15f5f80763f196d4fa7faa690da0af94, type: 3}
   recallDmg: 1
   clipAmmo:
     max: 10

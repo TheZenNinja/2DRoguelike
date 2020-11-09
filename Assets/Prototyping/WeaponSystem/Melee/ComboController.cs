@@ -38,7 +38,7 @@ public class ComboController : MonoBehaviour
 
     void Update()
     {
-        HandleInput();
+        //}HandleInput();
     }
 
     /// <summary>

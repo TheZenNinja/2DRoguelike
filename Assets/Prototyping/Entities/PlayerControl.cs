@@ -40,7 +40,7 @@ public class PlayerControl : EntityBase
 
     public Transform model;
     public Transform handAnim;
-
+    public PlayerData data;
     public bool isFlipped;
     [SerializeField] Collider2D footCol;
 
